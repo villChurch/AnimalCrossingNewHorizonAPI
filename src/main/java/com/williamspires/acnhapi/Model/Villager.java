@@ -14,7 +14,7 @@ public class Villager {
     private String name;
     private String Species;
     private String Gender;
-    private String Personality;
+    private String personality;
     private String Hobby;
     private String Birthday;
     private String Catchphrase;
@@ -36,7 +36,7 @@ public class Villager {
         this.name = Name;
         this.Species = species;
         this.Gender = gender;
-        this.Personality =personality;
+        this.personality =personality;
         this.Hobby = hobby;
         this.Birthday = birthday;
         this.Catchphrase = catchphrase;
@@ -84,11 +84,11 @@ public class Villager {
     }
 
     public String getPersonality() {
-        return Personality;
+        return personality;
     }
 
     public void setPersonality(String personality) {
-        Personality = personality;
+        this.personality = personality;
     }
 
     public String getHobby() {
