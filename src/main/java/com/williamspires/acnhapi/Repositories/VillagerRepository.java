@@ -10,4 +10,6 @@ import java.util.List;
 public interface VillagerRepository extends JpaRepository<Villager, Integer> {
 
     Villager findVillagerByName(String name);
+
+    List<Villager> findVillagerByPersonality(String personality);
 }
