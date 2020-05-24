@@ -6,23 +6,22 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="fish")
-public class Fish {
+@Table(name = "insects")
+public class Insect {
+
     @Id
     @Column(name="Unique_Entry_ID")
     private String uniqueEntryID;
-    @Column(name="me")
+    @Column(name="Name")
     private String name;
     private int Sell;
-    @Column(name="Where_How")
-    private String WhereOrHow;
-    private String Shadow;
+    @Column(name="whereorhow")
+    private String whereorhow;
+    private String Weather;
     @Column(name="Total_Catches_to_Unlock")
     private int unlockCatches;
     @Column(name="Spawn_Rates")
     private String spawnRate;
-    @Column(name="Rain_Snow_Catch_Up")
-    private String rainSnowCatchUp;
     @Column(name="NH_Jan")
     private String nhJan;
     @Column(name="NH_Feb")
@@ -75,9 +74,6 @@ public class Fish {
     private String color1;
     @Column(name="Color_2")
     private String color2;
-    private String Size;
-    @Column(name="Lighting_Type")
-    private String lightingType;
     @Column(name="Icon_Filename")
     private String iconFilename;
     @Column(name="Critterpedia_Filename")
@@ -86,6 +82,14 @@ public class Fish {
     private String furnitureFilename;
     @Column(name="Internal_ID")
     private int internalID;
+
+    public String getUniqueEntryID() {
+        return uniqueEntryID;
+    }
+
+    public void setUniqueEntryID(String uniqueEntryID) {
+        this.uniqueEntryID = uniqueEntryID;
+    }
 
     public String getName() {
         return name;
@@ -104,19 +108,19 @@ public class Fish {
     }
 
     public String getWhereOrHow() {
-        return WhereOrHow;
+        return whereorhow;
     }
 
     public void setWhereOrHow(String whereOrHow) {
-        WhereOrHow = whereOrHow;
+        whereorhow = whereOrHow;
     }
 
-    public String getShadow() {
-        return Shadow;
+    public String getWeather() {
+        return Weather;
     }
 
-    public void setShadow(String shadow) {
-        Shadow = shadow;
+    public void setWeather(String weather) {
+        Weather = weather;
     }
 
     public int getUnlockCatches() {
@@ -133,14 +137,6 @@ public class Fish {
 
     public void setSpawnRate(String spawnRate) {
         this.spawnRate = spawnRate;
-    }
-
-    public String getRainSnowCatchUp() {
-        return rainSnowCatchUp;
-    }
-
-    public void setRainSnowCatchUp(String rainSnowCatchUp) {
-        this.rainSnowCatchUp = rainSnowCatchUp;
     }
 
     public String getNhJan() {
@@ -351,22 +347,6 @@ public class Fish {
         this.color2 = color2;
     }
 
-    public String getSize() {
-        return Size;
-    }
-
-    public void setSize(String size) {
-        Size = size;
-    }
-
-    public String getLightingType() {
-        return lightingType;
-    }
-
-    public void setLightingType(String lightingType) {
-        this.lightingType = lightingType;
-    }
-
     public String getIconFilename() {
         return iconFilename;
     }
@@ -397,13 +377,5 @@ public class Fish {
 
     public void setInternalID(int internalID) {
         this.internalID = internalID;
-    }
-
-    public String getUniqueEntryID() {
-        return uniqueEntryID;
-    }
-
-    public void setUniqueEntryID(String uniqueEntryID) {
-        this.uniqueEntryID = uniqueEntryID;
     }
 }
