@@ -18,7 +18,8 @@ public class Villager {
     private String Hobby;
     private String Birthday;
     private String Catchphrase;
-    private String Favorite_Song;
+    @Column(name="Favorite_Song")
+    private String favoriteSong;
     private String Style_1;
     private String Style_2;
     private String Color_1;
@@ -40,7 +41,7 @@ public class Villager {
         this.Hobby = hobby;
         this.Birthday = birthday;
         this.Catchphrase = catchphrase;
-        this.Favorite_Song = favorite_Song;
+        this.favoriteSong = favorite_Song;
         this.Style_1 = style_1;
         this.Style_2 = style_2;
         this.Color_1 = color_1;
@@ -115,12 +116,12 @@ public class Villager {
         Catchphrase = catchphrase;
     }
 
-    public String getFavorite_Song() {
-        return Favorite_Song;
+    public String getFavoriteSong() {
+        return favoriteSong;
     }
 
-    public void setFavorite_Song(String favorite_Song) {
-        Favorite_Song = favorite_Song;
+    public void setFavoriteSong(String favoriteSong) {
+        this.favoriteSong = favoriteSong;
     }
 
     public String getStyle_1() {

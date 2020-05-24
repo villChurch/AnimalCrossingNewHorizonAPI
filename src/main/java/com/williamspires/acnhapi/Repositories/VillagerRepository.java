@@ -18,4 +18,6 @@ public interface VillagerRepository extends JpaRepository<Villager, Integer> {
     List<Villager> getAllVillagers();
 
     List<Villager> findVillagersBySpecies(String species);
+
+    List<Villager> findVillagersByFavoriteSong(String favoriteSong);
 }

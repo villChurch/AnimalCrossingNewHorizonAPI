@@ -38,4 +38,9 @@ public class VillagerController {
     public List<Villager> bySpecies(@PathVariable String species) {
         return villagerRepository.findVillagersBySpecies(species);
     }
+
+    @GetMapping("/villager/song/{song}")
+    public List<Villager> byFavoriteSong(@PathVariable String song) {
+        return villagerRepository.findVillagersByFavoriteSong(song);
+    }
 }
