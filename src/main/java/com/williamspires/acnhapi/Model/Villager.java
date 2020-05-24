@@ -12,7 +12,7 @@ public class Villager {
     private String Unique_Entry_ID;
     @Column(name="me")
     private String name;
-    private String Species;
+    private String species;
     private String Gender;
     private String personality;
     private String Hobby;
@@ -34,7 +34,7 @@ public class Villager {
                     String favorite_Song, String style_1, String style_2, String color_1, String color_2, String wallpaper, String flooring,
                     String furniture_List, String filename, String unique_Entry_ID) {
         this.name = Name;
-        this.Species = species;
+        this.species = species;
         this.Gender = gender;
         this.personality =personality;
         this.Hobby = hobby;
@@ -68,11 +68,11 @@ public class Villager {
     }
 
     public String getSpecies() {
-        return Species;
+        return species;
     }
 
     public void setSpecies(String species) {
-        Species = species;
+        this.species = species;
     }
 
     public String getGender() {

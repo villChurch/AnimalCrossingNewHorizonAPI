@@ -33,4 +33,9 @@ public class VillagerController {
     public List<Villager> byPersonality(@PathVariable String personality) {
         return villagerRepository.findVillagerByPersonality(personality);
     }
+
+    @GetMapping("/villager/species/{species}")
+    public List<Villager> bySpecies(@PathVariable String species) {
+        return villagerRepository.findVillagersBySpecies(species);
+    }
 }
