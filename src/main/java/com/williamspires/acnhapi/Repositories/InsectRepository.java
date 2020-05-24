@@ -12,7 +12,7 @@ public interface InsectRepository extends JpaRepository<Insect, String> {
 
     Insect findInsectByName(String name);
 
-    @Query(value="select * insects fish where NH_JAN <> 'NA' OR SH_JAN <> 'NA'", nativeQuery = true)
+    @Query(value="select * from insects where NH_JAN <> 'NA' OR SH_JAN <> 'NA'", nativeQuery = true)
     List<Insect> insectsAvailableInJanuary();
 
     @Query(value="select * from insects where NH_FEB <> 'NA' OR SH_FEB <> 'NA'", nativeQuery = true)
