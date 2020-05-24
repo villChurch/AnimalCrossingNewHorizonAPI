@@ -1,5 +1,6 @@
 package com.williamspires.acnhapi.Controllers;
 
+import java.util.List;
 import com.williamspires.acnhapi.Model.Tools;
 import com.williamspires.acnhapi.Repositories.ToolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,14 @@ public class ToolsController {
     ToolRepository toolRepository;
 
     @GetMapping("/tool/{name}")
-    public Tools getToolByName(@PathVariable String name) {
+    public List<Tools> getToolByName(@PathVariable String name) {
         return toolRepository.findToolByName(name);
     }
+
+    /* TO-DO see TollRepository.java
+    @GetMapping("/tool/distinct/{name}")
+    public Tools getToolByNameDistinct(@PathVariable String name) {
+        return toolRepository.findToolsByNameDistinct(name);
+    }
+ */
 }
