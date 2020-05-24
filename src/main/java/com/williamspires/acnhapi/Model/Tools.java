@@ -8,7 +8,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name="tools")
 public class Tools {
-
+    @Id
+    private String Unique_Entry_ID;
     @Column(name="me")
     private String name;
     private String Variation;
@@ -31,8 +32,6 @@ public class Tools {
     private String Filename;
     private String Variant_ID;
     private String Internal_ID;
-    @Id
-    private String Unique_Entry_ID;
 
     public String getName() {
         return name;
@@ -206,7 +205,7 @@ public class Tools {
         return Unique_Entry_ID;
     }
 
-    public void setUnique_Entry_ID(String unique_Entry_ID) {
-        Unique_Entry_ID = unique_Entry_ID;
+    public void setUnique_Entry_ID(String unique_entry_id) {
+        this.Unique_Entry_ID = unique_entry_id;
     }
 }
