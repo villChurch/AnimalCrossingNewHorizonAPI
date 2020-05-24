@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.williamspires</groupId>
     <artifactId>acnhapi</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <name>acnhapi</name>
     <description>API for Animal crossing New Horizons data</description>
 
