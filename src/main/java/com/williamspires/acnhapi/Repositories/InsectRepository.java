@@ -47,4 +47,7 @@ public interface InsectRepository extends JpaRepository<Insect, String> {
 
     @Query(value = "select * from insects where NH_DEC <> 'NA' OR SH_DEC <> 'NA'", nativeQuery = true)
     List<Insect> insectsAvailableInDecember();
+
+    @Query(value = "select * from insects", nativeQuery = true)
+    List<Insect> getAllInsects();
 }

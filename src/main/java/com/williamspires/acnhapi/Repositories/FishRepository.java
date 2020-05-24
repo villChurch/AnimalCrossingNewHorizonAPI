@@ -47,4 +47,7 @@ public interface FishRepository extends JpaRepository<Fish, Integer> {
 
     @Query(value = "select * from fish where NH_DEC <> 'NA' OR SH_DEC <> 'NA'", nativeQuery = true)
     List<Fish> fishAvailableInDecember();
+
+    @Query(value = "select * from fish", nativeQuery = true)
+    List<Fish> getAllFish();
 }
