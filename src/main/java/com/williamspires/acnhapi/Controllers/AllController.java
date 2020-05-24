@@ -70,9 +70,8 @@ public class AllController {
         return redItemRepository.getAllRedItems();
     }
 
-    /* TODO Fix this - java.sql.SQLException: Column 'unique_entry_id' not found.
     @GetMapping("/all/tools")
     public List<Tools> getAllTools() {
         return toolRepository.getAllTools();
-    } */
+    }
 }
