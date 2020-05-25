@@ -199,4 +199,124 @@ public class InsectController {
     public List<Insect> getInsectsInDecemberSH() {
         return insectRepository.insectsAvailableInDecemberSH();
     }
+
+    @GetMapping("/insect/leaving/January/NH")
+    public List<Insect> getInsectsLeavingAfterJanuaryNH() {
+        return insectRepository.insectsLeavingAfterJanuaryNH();
+    }
+
+    @GetMapping("/insect/leaving/January/SH")
+    public List<Insect> getInsectsLeavingAfterJanuarySH() {
+        return insectRepository.insectsLeavingAfterJanuarySH();
+    }
+
+    @GetMapping("/insect/leaving/February/NH")
+    public List<Insect> getInsectsLeavingAfterFebruaryNH() {
+        return insectRepository.insectsLeavingAfterFebruaryNH();
+    }
+
+    @GetMapping("/insect/leaving/February/SH")
+    public List<Insect> getInsectsLeavingAfterFebruarySH() {
+        return insectRepository.insectsLeavingAfterFebruarySH();
+    }
+
+    @GetMapping("/insect/leaving/March/NH")
+    public List<Insect> getInsectsLeavingAfterMarchNH() {
+        return insectRepository.insectsLeavingAfterMarchNH();
+    }
+
+    @GetMapping("/insect/leaving/March/SH")
+    public List<Insect> getInsectsLeavingAfterMarchSH() {
+        return insectRepository.insectsLeavingAfterMarchSH();
+    }
+
+    @GetMapping("/insect/leaving/April/NH")
+    public List<Insect> getInsectsLeavingAfterAprilNH() {
+        return insectRepository.insectsLeavingAfterAprilNH();
+    }
+
+    @GetMapping("/insect/leaving/April/SH")
+    public List<Insect> getInsectsLeavingAfterAprilSH() {
+        return insectRepository.insectsLeavingAfterAprilSH();
+    }
+
+    @GetMapping("/insect/leaving/May/NH")
+    public List<Insect> getInsectsLeavingAfterMayNH() {
+        return insectRepository.insectsLeavingAfterMayNH();
+    }
+
+    @GetMapping("/insect/leaving/May/SH")
+    public List<Insect> getInsectsLeavingAfterMaySH() {
+        return insectRepository.insectsLeavingAfterMaySH();
+    }
+
+    @GetMapping("/insect/leaving/June/NH")
+    public List<Insect> getInsectsLeavingAfterJuneNH() {
+        return insectRepository.insectsLeavingAfterJuneNH();
+    }
+
+    @GetMapping("/insect/leaving/June/SH")
+    public List<Insect> getInsectsLeavingAfterJuneSH() {
+        return insectRepository.insectsLeavingAfterJuneSH();
+    }
+
+    @GetMapping("/insect/leaving/July/NH")
+    public List<Insect> getInsectsLeavingAfterJulyNH() {
+        return insectRepository.insectsLeavingAfterJulyNH();
+    }
+
+    @GetMapping("/insect/leaving/July/SH")
+    public List<Insect> getInsectsLeavingAfterJulySH() {
+        return insectRepository.insectsLeavingAfterJulySH();
+    }
+
+    @GetMapping("/insect/leaving/August/NH")
+    public List<Insect> getInsectsLeavingAfterAugustNH() {
+        return insectRepository.insectsLeavingAfterAugustNH();
+    }
+
+    @GetMapping("/insect/leaving/August/SH")
+    public List<Insect> getInsectsLeavingAfterAugustSH() {
+        return insectRepository.insectsLeavingAfterAugustSH();
+    }
+
+    @GetMapping("/insect/leaving/September/NH")
+    public List<Insect> getInsectsLeavingAfterSeptemberNH() {
+        return insectRepository.insectsLeavingAfterSeptemberNH();
+    }
+
+    @GetMapping("/insect/leaving/September/SH")
+    public List<Insect> getInsectsLeavingAfterSeptemberSH() {
+        return insectRepository.insectsLeavingAfterSeptemberSH();
+    }
+
+    @GetMapping("/insect/leaving/October/NH")
+    public List<Insect> getInsectsLeavingAfterOctoberNH() {
+        return insectRepository.insectsLeavingAfterOctoberNH();
+    }
+
+    @GetMapping("/insect/leaving/October/SH")
+    public List<Insect> getInsectsLeavingAfterOctoberSH() {
+        return insectRepository.insectsLeavingAfterOctoberSH();
+    }
+
+    @GetMapping("/insect/leaving/November/NH")
+    public List<Insect> getInsectsLeavingAfterNovemberNH() {
+        return insectRepository.insectsLeavingAfterNovemberNH();
+    }
+
+    @GetMapping("/insect/leaving/November/SH")
+    public List<Insect> getInsectsLeavingAfterNovemberSH() {
+        return insectRepository.insectsLeavingAfterNovemberSH();
+    }
+
+    @GetMapping("/insect/leaving/December/NH")
+    public List<Insect> getInsectsLeavingAfterDecemberNH() {
+        return insectRepository.insectsLeavingAfterDecemberNH();
+    }
+
+    @GetMapping("/insect/leaving/December/SH")
+    public List<Insect> getInsectsLeavingAfterDecemberSH() {
+        return insectRepository.insectsLeavingAfterDecemberSH();
+    }
 }
