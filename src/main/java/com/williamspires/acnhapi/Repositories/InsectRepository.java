@@ -192,6 +192,78 @@ public interface InsectRepository extends JpaRepository<Insect, String> {
     @Query(value = "select * from insects where SH_DEC <> 'NA' AND SH_JAN = 'NA'", nativeQuery = true)
     List<Insect> insectsLeavingAfterDecemberSH();
 
+    @Query(value = "select * from insects where NH_DEC = 'NA' AND NH_JAN <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInJanuaryNH();
+
+    @Query(value = "select * from insects where SH_DEC = 'NA' AND SH_JAN <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInJanuarySH();
+
+    @Query(value = "select * from insects where NH_JAN = 'NA' AND NH_FEB <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInFebruaryNH();
+
+    @Query(value = "select * from insects where SH_JAN = 'NA' AND SH_FEB <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInFebruarySH();
+
+    @Query(value = "select * from insects where NH_FEB = 'NA' AND NH_MAR <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInMarchNH();
+
+    @Query(value = "select * from insects where SH_FEB = 'NA' AND SH_MAR <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInMarchSH();
+
+    @Query(value = "select * from insects where NH_MAR = 'NA' AND NH_APR <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInAprilNH();
+
+    @Query(value = "select * from insects where SH_MAR = 'NA' AND SH_APR <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInAprilSH();
+
+    @Query(value = "select * from insects where NH_APR = 'NA' AND NH_MAY <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInMayNH();
+
+    @Query(value = "select * from insects where SH_APR = 'NA' AND SH_MAY <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInMaySH();
+
+    @Query(value = "select * from insects where NH_MAY = 'NA' AND NH_JUN <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInJuneNH();
+
+    @Query(value = "select * from insects where SH_MAY = 'NA' AND SH_JUN <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInJuneSH();
+
+    @Query(value = "select * from insects where NH_JUN = 'NA' AND NH_JUL <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInJulyNH();
+
+    @Query(value = "select * from insects where SH_JUN = 'NA' AND SH_JUL <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInJulySH();
+
+    @Query(value = "select * from insects where NH_JUL = 'NA' AND NH_AUG <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInAugustNH();
+
+    @Query(value = "select * from insects where SH_JUL = 'NA' AND SH_AUG <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInAugustSH();
+
+    @Query(value = "select * from insects where NH_AUG = 'NA' AND NH_SEP <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInSeptemberNH();
+
+    @Query(value = "select * from insects where SH_AUG = 'NA' AND SH_SEP <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInSeptemberSH();
+
+    @Query(value = "select * from insects where NH_SEP = 'NA' AND NH_OCT <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInOctoberNH();
+
+    @Query(value = "select * from insects where SH_SEP = 'NA' AND SH_OCT <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInOctoberSH();
+
+    @Query(value = "select * from insects where NH_OCT = 'NA' AND NH_NOV <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInNovemberNH();
+
+    @Query(value = "select * from insects where SH_OCT = 'NA' AND SH_NOV <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInNovemberSH();
+
+    @Query(value = "select * from insects where NH_NOV = 'NA' AND NH_DEC <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInDecemberNH();
+
+    @Query(value = "select * from insects where SH_NOV = 'NA' AND SH_DEC <> 'NA'", nativeQuery = true)
+    List<Insect> insectsArrivingInDecemberSH();
+
     @Query(value = "select * from insects", nativeQuery = true)
     List<Insect> getAllInsects();
 }
