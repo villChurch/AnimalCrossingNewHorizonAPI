@@ -79,4 +79,124 @@ public class InsectController {
     public List<Insect> getInsectInDecember() {
         return insectRepository.insectsAvailableInDecember();
     }
+
+    @GetMapping("/insect/available/January/NH")
+    public List<Insect> getInsectsInJanuaryNH() {
+        return insectRepository.insectsAvailableInJanuaryNH();
+    }
+
+    @GetMapping("/insect/available/January/SH")
+    public List<Insect> getInsectsInJanuarySH() {
+        return insectRepository.insectsAvailableInJanuarySH();
+    }
+
+    @GetMapping("/insect/available/February/NH")
+    public List<Insect> getInsectsInFebruaryNH() {
+        return insectRepository.insectsAvailableInFebruaryNH();
+    }
+
+    @GetMapping("/insect/available/February/SH")
+    public List<Insect> getInsectsInFebruarySH() {
+        return insectRepository.insectsAvailableInFebruarySH();
+    }
+
+    @GetMapping("/insect/available/March/NH")
+    public List<Insect> getInsectsInMarchNH() {
+        return insectRepository.insectsAvailableInMarchNH();
+    }
+
+    @GetMapping("/insect/available/March/SH")
+    public List<Insect> getInsectsInMarchSH() {
+        return insectRepository.insectsAvailableInMarchSH();
+    }
+
+    @GetMapping("/insect/available/April/NH")
+    public List<Insect> getInsectsInAprilNH() {
+        return insectRepository.insectsAvailableInAprilNH();
+    }
+
+    @GetMapping("/insect/available/April/SH")
+    public List<Insect> getInsectsInAprilSH() {
+        return insectRepository.insectsAvailableInAprilSH();
+    }
+
+    @GetMapping("/insect/available/May/NH")
+    public List<Insect> getInsectsInMayNH() {
+        return insectRepository.insectsAvailableInMayNH();
+    }
+
+    @GetMapping("/insect/available/May/SH")
+    public List<Insect> getInsectsInMaySH() {
+        return insectRepository.insectsAvailableInMaySH();
+    }
+
+    @GetMapping("/insect/available/June/NH")
+    public List<Insect> getInsectsInJuneNH() {
+        return insectRepository.insectsAvailableInJuneNH();
+    }
+
+    @GetMapping("/insect/available/June/SH")
+    public List<Insect> getInsectsInJuneSH() {
+        return insectRepository.insectsAvailableInJuneSH();
+    }
+
+    @GetMapping("/insect/available/July/NH")
+    public List<Insect> getInsectsInJulyNH() {
+        return insectRepository.insectsAvailableInJulyNH();
+    }
+
+    @GetMapping("/insect/available/July/SH")
+    public List<Insect> getInsectsInJulySH() {
+        return insectRepository.insectsAvailableInJulySH();
+    }
+
+    @GetMapping("/insect/available/August/NH")
+    public List<Insect> getInsectsInAugustNH() {
+        return insectRepository.insectsAvailableInAugustNH();
+    }
+
+    @GetMapping("/insect/available/August/SH")
+    public List<Insect> getInsectsInAugustSH() {
+        return insectRepository.insectsAvailableInAugustSH();
+    }
+
+    @GetMapping("/insect/available/September/NH")
+    public List<Insect> getInsectsInSeptemberNH() {
+        return insectRepository.insectsAvailableInSeptemberNH();
+    }
+
+    @GetMapping("/insect/available/September/SH")
+    public List<Insect> getInsectsInSeptemberSH() {
+        return insectRepository.insectsAvailableInSeptemberSH();
+    }
+
+    @GetMapping("/insect/available/October/NH")
+    public List<Insect> getInsectsInOctoberNH() {
+        return insectRepository.insectsAvailabeInOctoberNH();
+    }
+
+    @GetMapping("/insect/available/October/SH")
+    public List<Insect> getInsectsInOctoberSH() {
+        return insectRepository.insectsAvailableInOctoberSH();
+    }
+
+    @GetMapping("/insect/available/November/NH")
+    public List<Insect> getInsectsInNovemberNH() {
+        return insectRepository.insectsAvailableInNovemberNH();
+    }
+
+    @GetMapping("/insect/available/November/SH")
+    public List<Insect> getInsectsInNovemberSH() {
+        return insectRepository.insectsAvailableInNovemberSH();
+    }
+
+    @GetMapping("/insect/available/December/NH")
+    public List<Insect> getInsectsInDecemberNH() {
+        return insectRepository.insectsAvailableInDecemberNH();
+    }
+
+    @GetMapping("/insect/available/December/SH")
+    public List<Insect> getInsectsInDecemberSH() {
+        return insectRepository.insectsAvailableInDecemberSH();
+    }
 }
