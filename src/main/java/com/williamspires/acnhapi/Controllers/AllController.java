@@ -29,6 +29,8 @@ public class AllController {
     RedItemRepository redItemRepository;
     @Autowired
     ToolRepository toolRepository;
+    @Autowired
+    FossilRepository fossilRepository;
 
     @GetMapping("/all/villager")
     public List<Villager> getAllVillagers() {
@@ -73,5 +75,10 @@ public class AllController {
     @GetMapping("/all/tools")
     public List<Tools> getAllTools() {
         return toolRepository.getAllTools();
+    }
+
+    @GetMapping("/all/fossils")
+    public List<Fossil> getAllFossils() {
+        return fossilRepository.getAllFossils();
     }
 }
