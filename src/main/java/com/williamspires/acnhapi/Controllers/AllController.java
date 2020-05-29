@@ -32,6 +32,9 @@ public class AllController {
     @Autowired
     FossilRepository fossilRepository;
 
+    @Autowired
+    ArtworkRepository artworkRepository;
+
     @GetMapping("/all/villager")
     public List<Villager> getAllVillagers() {
         return villagerRepository.getAllVillagers();
@@ -80,5 +83,10 @@ public class AllController {
     @GetMapping("/all/fossils")
     public List<Fossil> getAllFossils() {
         return fossilRepository.getAllFossils();
+    }
+
+    @GetMapping("/all/artwork")
+    public List<Artwork> getAllArtwork() {
+        return  artworkRepository.getAllArtwork();
     }
 }
