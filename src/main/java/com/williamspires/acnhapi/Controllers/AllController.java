@@ -31,9 +31,10 @@ public class AllController {
     ToolRepository toolRepository;
     @Autowired
     FossilRepository fossilRepository;
-
     @Autowired
     ArtworkRepository artworkRepository;
+    @Autowired
+    AcnhEventsRepository acnhEventsRepository;
 
     @GetMapping("/all/villager")
     public List<Villager> getAllVillagers() {
@@ -88,5 +89,10 @@ public class AllController {
     @GetMapping("/all/artwork")
     public List<Artwork> getAllArtwork() {
         return  artworkRepository.getAllArtwork();
+    }
+
+    @GetMapping("/all/events")
+    public List<acnhevents> getAllEvents() {
+        return acnhEventsRepository.getAllEvents();
     }
 }
