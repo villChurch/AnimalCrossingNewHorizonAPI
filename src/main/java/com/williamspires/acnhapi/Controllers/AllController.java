@@ -35,6 +35,12 @@ public class AllController {
     ArtworkRepository artworkRepository;
     @Autowired
     AcnhEventsRepository acnhEventsRepository;
+    @Autowired
+    OutfitRepository outfitRepository;
+    @Autowired
+    NhSeasonalRepository nhSeasonalRepository;
+    @Autowired
+    ShSeasonalRepository shSeasonalRepository;
 
     @GetMapping("/all/villager")
     public List<Villager> getAllVillagers() {
@@ -94,5 +100,20 @@ public class AllController {
     @GetMapping("/all/events")
     public List<acnhevents> getAllEvents() {
         return acnhEventsRepository.getAllEvents();
+    }
+
+    @GetMapping("/all/outfits")
+    public List<Outfits> getAllOutfits() {
+        return outfitRepository.getAllOutfits();
+    }
+
+    @GetMapping("/all/blossoms/nh")
+    public List<NhSeasonal> getAllNhBlossoms() {
+        return nhSeasonalRepository.getAllNhBlossoms();
+    }
+
+    @GetMapping("/all/blossoms/sh")
+    public List<ShSeasonal> getAllShBlossoms() {
+        return shSeasonalRepository.getAllShBlossoms();
     }
 }
