@@ -11,14 +11,15 @@ import java.util.List;
 @RestController
 public class FishPunController {
 
-    @Autowired
-    FishPunRepository fishPunRepository;
+    private final FishPunRepository fishPunRepository;
+    FishPunController(FishPunRepository fishPunRepository){
+        this.fishPunRepository = fishPunRepository;
+    }
 
     @GetMapping("/puns/fish")
     public FishPuns getRandomFishPun() {
         List<FishPuns> allPuns = fishPunRepository.getAllFishPuns();
         int randomNumber = (int) (Math.random() * (allPuns.size() + 1));
-        System.out.println(randomNumber);
         allPuns.get(randomNumber).setText(allPuns.get(randomNumber).getText().replaceAll("\\u000e", " "));
         return allPuns.get(randomNumber);
     }
