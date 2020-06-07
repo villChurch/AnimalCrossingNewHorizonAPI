@@ -1,5 +1,6 @@
 package com.williamspires.acnhapi.Controllers;
 
+import com.williamspires.acnhapi.Exceptions.FishNotFoundException;
 import com.williamspires.acnhapi.Model.Fish;
 import com.williamspires.acnhapi.Repositories.FishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,18 @@ import java.util.List;
 @RestController
 public class FishController {
 
-    @Autowired
-    FishRepository fishRepository;
+    private final FishRepository fishRepository;
+    FishController(FishRepository fishRepository){
+        this.fishRepository = fishRepository;
+    }
 
     @GetMapping("/fish/{name}")
     public Fish getFishByName(@PathVariable String name) {
-        return fishRepository.findFishByName(name);
+        Fish fish = fishRepository.findFishByName(name);
+        if(null == fish){
+            throw new FishNotFoundException(name);
+        }
+        return fish;
     }
 
     @GetMapping("/fish/available/January")

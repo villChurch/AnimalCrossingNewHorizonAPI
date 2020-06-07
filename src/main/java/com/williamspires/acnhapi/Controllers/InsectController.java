@@ -1,8 +1,8 @@
 package com.williamspires.acnhapi.Controllers;
 
+import com.williamspires.acnhapi.Exceptions.InsectNotFoundException;
 import com.williamspires.acnhapi.Model.Insect;
 import com.williamspires.acnhapi.Repositories.InsectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,12 +12,18 @@ import java.util.List;
 @RestController
 public class InsectController {
 
-    @Autowired
-    InsectRepository insectRepository;
+    private final InsectRepository insectRepository;
+    InsectController(InsectRepository insectRepository){
+        this.insectRepository = insectRepository;
+    }
 
     @GetMapping("/insect/{name}")
     public Insect getInsectByName(@PathVariable String name) {
-        return insectRepository.findInsectByName(name);
+        Insect insect = insectRepository.findInsectByName(name);
+        if(null == insect){
+            throw new InsectNotFoundException(name);
+        }
+        return insect;
     }
 
     @GetMapping("/insect/available/January")

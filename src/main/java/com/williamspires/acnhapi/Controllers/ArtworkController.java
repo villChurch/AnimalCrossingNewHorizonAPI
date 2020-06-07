@@ -1,10 +1,9 @@
 package com.williamspires.acnhapi.Controllers;
 
+import com.williamspires.acnhapi.Exceptions.ArtworkNotFoundException;
 import com.williamspires.acnhapi.Model.Artwork;
 import com.williamspires.acnhapi.Repositories.ArtworkRepository;
 import com.williamspires.acnhapi.Utils.RandomCollection;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,17 +13,27 @@ import java.util.List;
 @RestController
 public class ArtworkController {
 
-    @Autowired
-    ArtworkRepository artworkRepository;
+    private final ArtworkRepository artworkRepository;
+    ArtworkController(ArtworkRepository artworkRepository){
+        this.artworkRepository = artworkRepository;
+    }
 
     @GetMapping("/artwork/real/{name}")
     public Artwork getRealArtwork(@PathVariable String name){
-        return  artworkRepository.getArtworkByNameAndReal(name, true);
+        Artwork artwork = artworkRepository.getArtworkByNameAndReal(name, true);
+        if(null == artwork){
+            throw new ArtworkNotFoundException(name);
+        }
+        return  artwork;
     }
 
     @GetMapping("/artwork/fake/{name}")
     public Artwork getFakeArtwork(@PathVariable String name){
-        return  artworkRepository.getArtworkByNameAndReal(name, false);
+        Artwork artwork = artworkRepository.getArtworkByNameAndReal(name, false);
+        if(null == artwork){
+            throw new ArtworkNotFoundException(name);
+        }
+        return  artwork;
     }
 
     @GetMapping("/artwork/all/real")
