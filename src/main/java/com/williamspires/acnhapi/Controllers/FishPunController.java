@@ -2,12 +2,19 @@ package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Model.FishPuns;
 import com.williamspires.acnhapi.Repositories.FishPunRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "Fish puns", description = "Returns Fish puns")
 @RestController
 public class FishPunController {
 
@@ -16,7 +23,12 @@ public class FishPunController {
         this.fishPunRepository = fishPunRepository;
     }
 
-    @GetMapping("/puns/fish")
+    @Operation(summary = "Returns a random fish pun")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = FishPuns.class))))
+    })
+    @GetMapping(value = "/puns/fish", produces = { "application/json" })
     public FishPuns getRandomFishPun() {
         List<FishPuns> allPuns = fishPunRepository.getAllFishPuns();
         int randomNumber = (int) (Math.random() * (allPuns.size() + 1));

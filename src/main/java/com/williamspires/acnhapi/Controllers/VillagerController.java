@@ -4,32 +4,43 @@ import com.williamspires.acnhapi.Exceptions.PersonalityNotFoundException;
 import com.williamspires.acnhapi.Exceptions.SongNotFoundException;
 import com.williamspires.acnhapi.Exceptions.SpeciesNotFoundException;
 import com.williamspires.acnhapi.Exceptions.VillagerNotFoundException;
-import com.williamspires.acnhapi.Model.Raymond;
 import com.williamspires.acnhapi.Model.Villager;
 import com.williamspires.acnhapi.Model.VillagerPercentage;
 import com.williamspires.acnhapi.Model.VillagerPercentageNmt;
-import com.williamspires.acnhapi.Repositories.RaymondRepository;
 import com.williamspires.acnhapi.Repositories.VillagerRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 
+@Tag(name = "Villagers", description = "Information about villagers")
 @RestController
 public class VillagerController {
 
     private final DecimalFormat percentageRounding = new DecimalFormat("#.##");
 
     private final VillagerRepository villagerRepository;
-    private final RaymondRepository raymondRepository;
-    VillagerController(RaymondRepository raymondRepository, VillagerRepository villagerRepository){
-        this.raymondRepository = raymondRepository;
+    VillagerController(VillagerRepository villagerRepository){
         this.villagerRepository = villagerRepository;
     }
 
-    @GetMapping("/villager/{name}")
-    public Villager byName(@PathVariable String name) {
+    @Operation(summary = "Get villager by name", description = "Information about chosen villager")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Villager.class)))),
+            @ApiResponse(responseCode = "404", description = "Villager not found")
+    })
+    @GetMapping(value = "/villager/{name}", produces = { "application/json" })
+    public Villager byName(@Parameter(description = "Villager name") @PathVariable String name) {
         Villager searchFor = villagerRepository.findVillagerByName(name);
         if (null == searchFor) {
             throw new VillagerNotFoundException(name);
@@ -37,13 +48,15 @@ public class VillagerController {
         return searchFor;
     }
 
-    @GetMapping("/villager/Raymond/likes")
-    public List<Raymond> villagerLikes() {
-        return raymondRepository.findAll();
-    }
-
-    @GetMapping("/villager/personality/{personality}")
-    public List<Villager> byPersonality(@PathVariable String personality) {
+    @Operation(summary = "Get villagers by personality", description = "List of villagers by personality")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Villager.class)))),
+            @ApiResponse(responseCode = "404", description = "No villagers with this personality")
+    })
+    @GetMapping(value = "/villager/personality/{personality}", produces = { "application/json" })
+    public List<Villager> byPersonality(@Parameter(description = "Villager personality")
+                                            @PathVariable String personality) {
         List<Villager> villagers = villagerRepository.findVillagerByPersonality(personality);
         if(null == villagers || villagers.size() < 1){
             throw new PersonalityNotFoundException(personality);
@@ -51,8 +64,14 @@ public class VillagerController {
         return villagers;
     }
 
-    @GetMapping("/villager/species/{species}")
-    public List<Villager> bySpecies(@PathVariable String species) {
+    @Operation(summary = "Get villagers by species", description = "List of villagers by species")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Villager.class)))),
+            @ApiResponse(responseCode = "404", description = "No villagers with this species")
+    })
+    @GetMapping(value = "/villager/species/{species}", produces = { "application/json" })
+    public List<Villager> bySpecies(@Parameter(description = "Villager species") @PathVariable String species) {
         List<Villager> villagers = villagerRepository.findVillagersBySpecies(species);
         if(null == villagers || villagers.size() < 1){
             throw new SpeciesNotFoundException(species);
@@ -60,8 +79,14 @@ public class VillagerController {
         return villagers;
     }
 
-    @GetMapping("/villager/song/{song}")
-    public List<Villager> byFavoriteSong(@PathVariable String song) {
+    @Operation(summary = "Get villagers by favourite song", description = "List of villagers by favourite song")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Villager.class)))),
+            @ApiResponse(responseCode = "404", description = "No villagers with this favourite song")
+    })
+    @GetMapping(value = "/villager/song/{song}", produces = { "application/json" })
+    public List<Villager> byFavoriteSong(@Parameter(description = "Favourite song") @PathVariable String song) {
         List<Villager> villagers = villagerRepository.findVillagersByFavoriteSong(song);
         if(null == villagers || villagers.size() < 1){
             throw new SongNotFoundException(song);
@@ -69,7 +94,14 @@ public class VillagerController {
         return villagers;
     }
 
-    @PostMapping("/villager/odds")
+    @Operation(summary = "Get the odds of finding a specific villager",
+            description = "Returns the odds of finding a specific villager")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation"),
+            @ApiResponse(responseCode = "404", description = "Could not find villager")
+    })
+    @PostMapping(value = "/villager/odds", consumes = { "application/json" },
+            produces = { "application/text" })
     public String chanceToFindVillager(@RequestBody VillagerPercentage villagerPercentage) {
         Villager wanted = villagerRepository.findVillagerByName(villagerPercentage.getWants());
         if(null == wanted) {
@@ -80,7 +112,14 @@ public class VillagerController {
         return "You have a " + percentageRounding.format(percentage) +"% change of getting " + wanted.getName();
     }
 
-    @PostMapping("/villager/odds/nmt")
+    @Operation(summary = "Get the odds of finding a specific villager with a set number of NMTs",
+    description = "Returns the odds of finding a specific villager using a set number of NMTs")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation"),
+            @ApiResponse(responseCode = "404", description = "Could not find villager")
+    })
+    @PostMapping(value = "/villager/odds/nmt", consumes = { "application/json" },
+            produces = { "application/text" })
     public String chanceToFindVillagerWithNmts(@RequestBody VillagerPercentageNmt villagerPercentageNmt) {
         Villager wanted = villagerRepository.findVillagerByName(villagerPercentageNmt.getWants());
         if(null == wanted) {
