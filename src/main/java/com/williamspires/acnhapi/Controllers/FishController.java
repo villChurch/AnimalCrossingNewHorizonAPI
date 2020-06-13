@@ -3,13 +3,21 @@ package com.williamspires.acnhapi.Controllers;
 import com.williamspires.acnhapi.Exceptions.FishNotFoundException;
 import com.williamspires.acnhapi.Model.Fish;
 import com.williamspires.acnhapi.Repositories.FishRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "Fish", description = "Information about fish")
 @RestController
 public class FishController {
 
@@ -18,8 +26,14 @@ public class FishController {
         this.fishRepository = fishRepository;
     }
 
+    @Operation(summary = "Get fish by name", description = "Returns information about a particular fish")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class)))),
+            @ApiResponse(responseCode = "404", description = "Fish not found")
+    })
     @GetMapping("/fish/{name}")
-    public Fish getFishByName(@PathVariable String name) {
+    public Fish getFishByName(@Parameter(description = "Fish name") @PathVariable String name) {
         Fish fish = fishRepository.findFishByName(name);
         if(null == fish){
             throw new FishNotFoundException(name);
@@ -27,61 +41,122 @@ public class FishController {
         return fish;
     }
 
+    @Operation(summary = "Get fish available in January", description = "Returns a list of fish available in January")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/January")
     public List<Fish> getFishByMonth() {
         return fishRepository.fishAvailableInJanuary();
     }
 
+    @Operation(summary = "Get fish available in February",
+            description = "Returns a list of fish available in February")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful opeartion",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/February")
     public List<Fish> getFishInFeb() {
         return fishRepository.fishAvailableInFeb();
     }
 
+    @Operation(summary = "Get fish available in March", description = "Returns a list of fish available in March")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/March")
     public List<Fish> getFishInMarch() {
         return fishRepository.fishAvailableInMarch();
     }
 
+    @Operation(summary = "Get fish available in April", description = "Returns a list of fish available in April")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful opearation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/April")
     public List<Fish> getFishInApril() {
         return fishRepository.fishAvailableInApril();
     }
 
+    @Operation(summary = "Get fish available in May", description = "Returns a list of fish available in May")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/May")
     public List<Fish> getFishInMay() {
         return fishRepository.fishAvailableInMay();
     }
 
+    @Operation(summary = "Get fish available in June", description = "Returns a list of fish available in June")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/June")
     public List<Fish> getFishInJune() {
         return fishRepository.fishAvailableInJune();
     }
 
+    @Operation(summary = "Get fish available in July", description = "Returns a list of fish in July")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/July")
     public List<Fish> getFishInJuly() {
         return fishRepository.fishAvailableInJuly();
     }
 
+    @Operation(summary = "Get fish available in August", description = "Returns a list of fish in August")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/August")
     public List<Fish> getFishInAugust() {
         return fishRepository.fishAvailableInAugust();
     }
 
+    @Operation(summary = "Get fish available in September", description = "Returns a list of fish in September")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/September")
     public List<Fish> getFishInSeptember() {
         return fishRepository.fishAvailableInSeptember();
     }
 
+    @Operation(summary = "Get fish available in October", description = "Returns a list of fish in October")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/October")
     public List<Fish> getFishInOctober() {
         return fishRepository.fishAvailableInOctober();
     }
 
+    @Operation(summary = "Get fish available in November", description = "Returns a list of fish in November")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/November")
     public List<Fish> getFishInNovember() {
         return fishRepository.fishAvailableInNovember();
     }
 
+    @Operation(summary = "Get fish available in December", description = "Returns a list of fish in December")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fish.class))))
+    })
     @GetMapping("/fish/available/December")
     public List<Fish> getFishInDecember() {
         return fishRepository.fishAvailableInDecember();
