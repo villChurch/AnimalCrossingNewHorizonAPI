@@ -24,7 +24,8 @@ public class AllController {
                          RecipesRepository recipesRepository, ToolRepository toolRepository,
                          FossilRepository fossilRepository, ArtworkRepository artworkRepository,
                          AcnhEventsRepository acnhEventsRepository, OutfitRepository outfitRepository,
-                         NhSeasonalRepository nhSeasonalRepository, ShSeasonalRepository shSeasonalRepository)
+                         NhSeasonalRepository nhSeasonalRepository, ShSeasonalRepository shSeasonalRepository,
+                         ApiEventRepository apiEventRepository)
     {
         this.villagerRepository = villagerRepository;
         this.fishRepository = fishRepository;
@@ -40,6 +41,7 @@ public class AllController {
         this.outfitRepository = outfitRepository;
         this.nhSeasonalRepository = nhSeasonalRepository;
         this.shSeasonalRepository = shSeasonalRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     VillagerRepository villagerRepository;
@@ -56,6 +58,7 @@ public class AllController {
     OutfitRepository outfitRepository;
     NhSeasonalRepository nhSeasonalRepository;
     ShSeasonalRepository shSeasonalRepository;
+    private final ApiEventRepository apiEventRepository;
 
     @Operation(summary = "Returns all villagers")
     @ApiResponses(value = {
@@ -64,6 +67,9 @@ public class AllController {
     })
     @GetMapping("/all/villager")
     public List<Villager> getAllVillagers() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/villager");
+        apiEventRepository.insertApiEvent(event);
         return villagerRepository.getAllVillagers();
     }
 
@@ -74,6 +80,9 @@ public class AllController {
     })
     @GetMapping("/all/fish")
     public List<Fish> getAllFish() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/fish");
+        apiEventRepository.insertApiEvent(event);
         return fishRepository.getAllFish();
     }
 
@@ -84,6 +93,9 @@ public class AllController {
     })
     @GetMapping("/all/construction")
     public List<Construction> getAllConstructionItems() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/construction");
+        apiEventRepository.insertApiEvent(event);
         return constructionRepository.getAllConstruction();
     }
 
@@ -94,6 +106,9 @@ public class AllController {
     })
     @GetMapping("/all/fencing")
     public List<Fencing> getAllFencingItems() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/fencing");
+        apiEventRepository.insertApiEvent(event);
         return fencingRepository.getAllFencing();
     }
 
@@ -104,6 +119,9 @@ public class AllController {
     })
     @GetMapping("/all/furniture")
     public List<Furniture> getAllFurniture() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/furniture");
+        apiEventRepository.insertApiEvent(event);
         return furnitureRepository.getAllFurniture();
     }
 
@@ -114,6 +132,9 @@ public class AllController {
     })
     @GetMapping("/all/insects")
     public List<Insect> getAllInsects() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/insects");
+        apiEventRepository.insertApiEvent(event);
         return insectRepository.getAllInsects();
     }
 
@@ -124,6 +145,9 @@ public class AllController {
     })
     @GetMapping("/all/recipes")
     public List<Recipes> getAllRecipes() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/recipes");
+        apiEventRepository.insertApiEvent(event);
         return recipesRepository.getAllRecipes();
     }
 
@@ -134,6 +158,9 @@ public class AllController {
     })
     @GetMapping("/all/tools")
     public List<Tools> getAllTools() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/tools");
+        apiEventRepository.insertApiEvent(event);
         return toolRepository.getAllTools();
     }
 
@@ -144,6 +171,9 @@ public class AllController {
     })
     @GetMapping("/all/fossils")
     public List<Fossil> getAllFossils() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/fossils");
+        apiEventRepository.insertApiEvent(event);
         return fossilRepository.getAllFossils();
     }
 
@@ -154,6 +184,9 @@ public class AllController {
     })
     @GetMapping("/all/artwork")
     public List<Artwork> getAllArtwork() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/artwork");
+        apiEventRepository.insertApiEvent(event);
         return  artworkRepository.getAllArtwork();
     }
 
@@ -164,6 +197,9 @@ public class AllController {
     })
     @GetMapping("/all/events")
     public List<acnhevents> getAllEvents() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/events");
+        apiEventRepository.insertApiEvent(event);
         return acnhEventsRepository.getAllEvents();
     }
 
@@ -174,6 +210,9 @@ public class AllController {
     })
     @GetMapping("/all/outfits")
     public List<Outfits> getAllOutfits() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/events");
+        apiEventRepository.insertApiEvent(event);
         return outfitRepository.getAllOutfits();
     }
 
@@ -184,6 +223,9 @@ public class AllController {
     })
     @GetMapping("/all/blossoms/nh")
     public List<NhSeasonal> getAllNhBlossoms() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/blossoms/nh");
+        apiEventRepository.insertApiEvent(event);
         return nhSeasonalRepository.getAllNhBlossoms();
     }
 
@@ -194,6 +236,9 @@ public class AllController {
     })
     @GetMapping("/all/blossoms/sh")
     public List<ShSeasonal> getAllShBlossoms() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/blossoms/sh");
+        apiEventRepository.insertApiEvent(event);
         return shSeasonalRepository.getAllShBlossoms();
     }
 }

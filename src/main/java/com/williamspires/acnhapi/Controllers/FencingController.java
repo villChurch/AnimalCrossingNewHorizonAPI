@@ -1,7 +1,9 @@
 package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Exceptions.FencingNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Fencing;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.FencingRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class FencingController {
 
     private final FencingRepository fencingRepository;
-    FencingController(FencingRepository fencingRepository){
+    private final ApiEventRepository apiEventRepository;
+    FencingController(FencingRepository fencingRepository, ApiEventRepository apiEventRepository){
         this.fencingRepository = fencingRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Find fencing by name")
@@ -32,6 +36,9 @@ public class FencingController {
     })
     @GetMapping("/fencing/{name}")
     public Fencing getFenceByName(@Parameter(description = "Name of fencing") @PathVariable String name) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/fencing/" + name);
+        apiEventRepository.insertApiEvent(event);
         Fencing fencing = fencingRepository.findFencingByName(name);
         if(null == fencing){
             throw new FencingNotFoundException(name);

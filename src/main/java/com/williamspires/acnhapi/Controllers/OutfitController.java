@@ -1,7 +1,9 @@
 package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Exceptions.OutfitNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Outfits;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.OutfitRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,8 +24,10 @@ import java.util.List;
 public class OutfitController {
 
     private final OutfitRepository outfitRepository;
-    OutfitController(OutfitRepository outfitRepository){
+    private final ApiEventRepository apiEventRepository;
+    OutfitController(OutfitRepository outfitRepository, ApiEventRepository apiEventRepository){
         this.outfitRepository = outfitRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Get outfit by name", description = "Returns outfit information")
@@ -34,6 +38,9 @@ public class OutfitController {
     })
     @GetMapping(value = "/outfits/{name}", produces = { "application/json" })
     public List<Outfits> getOutfitsByName(@Parameter(description = "Outfit name") @PathVariable String name) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/outfits/" + name);
+        apiEventRepository.insertApiEvent(event);
         List<Outfits> outfits = outfitRepository.findOutfitsByName(name);
         if(null == outfits || outfits.size() < 1){
             throw new OutfitNotFoundException(name);

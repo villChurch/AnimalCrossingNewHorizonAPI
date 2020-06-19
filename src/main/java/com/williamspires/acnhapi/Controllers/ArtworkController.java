@@ -1,7 +1,9 @@
 package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Exceptions.ArtworkNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Artwork;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.ArtworkRepository;
 import com.williamspires.acnhapi.Utils.RandomCollection;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,8 +25,10 @@ import java.util.List;
 public class ArtworkController {
 
     private final ArtworkRepository artworkRepository;
-    ArtworkController(ArtworkRepository artworkRepository){
+    private final ApiEventRepository apiEventRepository;
+    ArtworkController(ArtworkRepository artworkRepository, ApiEventRepository apiEventRepository){
         this.artworkRepository = artworkRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Find real artwork or statue by name")
@@ -36,6 +40,9 @@ public class ArtworkController {
     @GetMapping("/artwork/real/{name}")
     public Artwork getRealArtwork(@Parameter(description = "Name of artwork or statue")
                                       @PathVariable String name){
+        ApiEvent event = new ApiEvent();
+        event.setPath("/artwork/real/" + name);
+        apiEventRepository.insertApiEvent(event);
         Artwork artwork = artworkRepository.getArtworkByNameAndReal(name, true);
         if(null == artwork){
             throw new ArtworkNotFoundException(name);
@@ -52,6 +59,9 @@ public class ArtworkController {
     @GetMapping("/artwork/fake/{name}")
     public Artwork getFakeArtwork(@Parameter(description = "Name of artwork or statue")
                                       @PathVariable String name){
+        ApiEvent event = new ApiEvent();
+        event.setPath("/artwork/fake/" + name);
+        apiEventRepository.insertApiEvent(event);
         Artwork artwork = artworkRepository.getArtworkByNameAndReal(name, false);
         if(null == artwork){
             throw new ArtworkNotFoundException(name);
@@ -66,6 +76,9 @@ public class ArtworkController {
     })
     @GetMapping("/artwork/all/real")
     public List<Artwork> getAllRealArtwork() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/artwork/all/real");
+        apiEventRepository.insertApiEvent(event);
         return  artworkRepository.getAllRealArtwork();
     }
 
@@ -76,6 +89,9 @@ public class ArtworkController {
     })
     @GetMapping("/artwork/all/fake")
     public List<Artwork> getAllFakeArtwork() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/artwork/all/fake");
+        apiEventRepository.insertApiEvent(event);
         return artworkRepository.getAllFakeArtwork();
     }
 
@@ -86,6 +102,9 @@ public class ArtworkController {
     })
     @GetMapping("/artwork/random")
     public Artwork getRandomArtwork() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/artwork/random");
+        apiEventRepository.insertApiEvent(event);
         List<Artwork> realArtwork = artworkRepository.getAllRealArtwork();
         List<Artwork> fakeArtwork = artworkRepository.getAllFakeArtwork();
         /*

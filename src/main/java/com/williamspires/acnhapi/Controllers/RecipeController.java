@@ -1,7 +1,9 @@
 package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Exceptions.RecipeNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Recipes;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.RecipesRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class RecipeController {
 
     private final RecipesRepository recipesRepository;
-    RecipeController(RecipesRepository recipesRepository){
+    private final ApiEventRepository apiEventRepository;
+    RecipeController(RecipesRepository recipesRepository, ApiEventRepository apiEventRepository){
         this.recipesRepository = recipesRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Get DIY information by name", description = "Returns DIY information by name of DIY")
@@ -32,6 +36,9 @@ public class RecipeController {
     })
     @GetMapping(value = "/diy/{name}", produces = { "application/json" })
     public Recipes getByName(@Parameter(description = "DIY name") @PathVariable String name) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/diy/" + name);
+        apiEventRepository.insertApiEvent(event);
         Recipes recipe = recipesRepository.findRecipesByName(name);
         if(null == recipe){
             throw new RecipeNotFoundException(name);

@@ -1,7 +1,9 @@
 package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Exceptions.FossilNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Fossil;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.FossilRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class FossilController {
 
     private final FossilRepository fossilRepository;
-    FossilController(FossilRepository fossilRepository){
+    private final ApiEventRepository apiEventRepository;
+    FossilController(FossilRepository fossilRepository, ApiEventRepository apiEventRepository){
         this.fossilRepository = fossilRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Returns fossil information by name")
@@ -32,6 +36,9 @@ public class FossilController {
     })
     @GetMapping(value = "/fossils/{name}", produces = { "application/json" })
     public Fossil getFossilByName(@Parameter(description = "Fossil name") @PathVariable String name) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/fossils/" + name);
+        apiEventRepository.insertApiEvent(event);
         Fossil fossil = fossilRepository.findFossilByName(name);
         if(null == fossil){
             throw new FossilNotFoundException(name);

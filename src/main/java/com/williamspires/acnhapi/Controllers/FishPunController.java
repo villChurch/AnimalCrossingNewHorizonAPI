@@ -1,6 +1,8 @@
 package com.williamspires.acnhapi.Controllers;
 
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.FishPuns;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.FishPunRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -19,8 +21,10 @@ import java.util.List;
 public class FishPunController {
 
     private final FishPunRepository fishPunRepository;
-    FishPunController(FishPunRepository fishPunRepository){
+    private final ApiEventRepository apiEventRepository;
+    FishPunController(FishPunRepository fishPunRepository, ApiEventRepository apiEventRepository){
         this.fishPunRepository = fishPunRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Returns a random fish pun")
@@ -33,6 +37,9 @@ public class FishPunController {
         List<FishPuns> allPuns = fishPunRepository.getAllFishPuns();
         int randomNumber = (int) (Math.random() * (allPuns.size() + 1));
         allPuns.get(randomNumber).setText(allPuns.get(randomNumber).getText().replaceAll("\\u000e", " "));
+        ApiEvent event = new ApiEvent();
+        event.setPath("/puns/fish");
+        apiEventRepository.insertApiEvent(event);
         return allPuns.get(randomNumber);
     }
 }

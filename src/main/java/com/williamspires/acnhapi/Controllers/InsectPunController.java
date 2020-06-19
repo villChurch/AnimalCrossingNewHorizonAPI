@@ -1,6 +1,8 @@
 package com.williamspires.acnhapi.Controllers;
 
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.InsectPuns;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.InsectPunRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -19,8 +21,10 @@ import java.util.List;
 public class InsectPunController {
 
     private final InsectPunRepository insectPunRepository;
-    InsectPunController(InsectPunRepository insectPunRepository){
+    private final ApiEventRepository apiEventRepository;
+    InsectPunController(InsectPunRepository insectPunRepository, ApiEventRepository apiEventRepository){
         this.insectPunRepository = insectPunRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Returns a random insect pun")
@@ -30,6 +34,9 @@ public class InsectPunController {
     })
     @GetMapping(value = "/puns/insect", produces = { "application/json" })
     public InsectPuns getRandomInsectPun() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/puns/insect");
+        apiEventRepository.insertApiEvent(event);
         List<InsectPuns> allPuns = insectPunRepository.getAllInsectPuns();
         int randomNumber = (int) (Math.random() * (allPuns.size() + 1));
         System.out.println(randomNumber);
