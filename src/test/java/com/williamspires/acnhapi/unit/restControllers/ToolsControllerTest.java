@@ -2,6 +2,7 @@ package com.williamspires.acnhapi.unit.restControllers;
 
 import com.williamspires.acnhapi.Controllers.ToolsController;
 import com.williamspires.acnhapi.Model.Tools;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.ToolRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
@@ -36,6 +37,8 @@ public class ToolsControllerTest {
 
     @MockBean
     ToolRepository toolRepository;
+    @MockBean
+    ApiEventRepository eventRepository;
 
     private Tools tools;
 
