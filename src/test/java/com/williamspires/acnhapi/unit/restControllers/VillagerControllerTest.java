@@ -2,6 +2,7 @@ package com.williamspires.acnhapi.unit.restControllers;
 
 import com.williamspires.acnhapi.Controllers.VillagerController;
 import com.williamspires.acnhapi.Model.Villager;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.RaymondRepository;
 import com.williamspires.acnhapi.Repositories.VillagerRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,8 @@ public class VillagerControllerTest {
     private VillagerRepository villagerRepository;
     @MockBean
     private RaymondRepository raymondRepository;
+    @MockBean
+    private ApiEventRepository eventRepository;
 
     private Villager testVillager;
 

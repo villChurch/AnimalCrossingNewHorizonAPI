@@ -2,6 +2,7 @@ package com.williamspires.acnhapi.unit.restControllers;
 
 import com.williamspires.acnhapi.Controllers.RecipeController;
 import com.williamspires.acnhapi.Model.Recipes;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.RecipesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
@@ -33,6 +34,8 @@ public class RecipeControllerTest {
 
     @MockBean
     RecipesRepository recipesRepository;
+    @MockBean
+    ApiEventRepository eventRepository;
 
     private Recipes testRecipe;
 
