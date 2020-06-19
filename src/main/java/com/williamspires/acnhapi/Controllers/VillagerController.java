@@ -4,9 +4,11 @@ import com.williamspires.acnhapi.Exceptions.PersonalityNotFoundException;
 import com.williamspires.acnhapi.Exceptions.SongNotFoundException;
 import com.williamspires.acnhapi.Exceptions.SpeciesNotFoundException;
 import com.williamspires.acnhapi.Exceptions.VillagerNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Villager;
 import com.williamspires.acnhapi.Model.VillagerPercentage;
 import com.williamspires.acnhapi.Model.VillagerPercentageNmt;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.VillagerRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,8 +31,10 @@ public class VillagerController {
     private final DecimalFormat percentageRounding = new DecimalFormat("#.##");
 
     private final VillagerRepository villagerRepository;
-    VillagerController(VillagerRepository villagerRepository){
+    private final ApiEventRepository apiEventRepository;
+    VillagerController(VillagerRepository villagerRepository, ApiEventRepository apiEventRepository){
         this.villagerRepository = villagerRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Get villager by name", description = "Information about chosen villager")
@@ -41,6 +45,9 @@ public class VillagerController {
     })
     @GetMapping(value = "/villager/{name}", produces = { "application/json" })
     public Villager byName(@Parameter(description = "Villager name") @PathVariable String name) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/villager/" + name);
+        apiEventRepository.insertApiEvent(event);
         Villager searchFor = villagerRepository.findVillagerByName(name);
         if (null == searchFor) {
             throw new VillagerNotFoundException(name);
@@ -57,6 +64,9 @@ public class VillagerController {
     @GetMapping(value = "/villager/personality/{personality}", produces = { "application/json" })
     public List<Villager> byPersonality(@Parameter(description = "Villager personality")
                                             @PathVariable String personality) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/villager/personality/" + personality);
+        apiEventRepository.insertApiEvent(event);
         List<Villager> villagers = villagerRepository.findVillagerByPersonality(personality);
         if(null == villagers || villagers.size() < 1){
             throw new PersonalityNotFoundException(personality);
@@ -72,6 +82,9 @@ public class VillagerController {
     })
     @GetMapping(value = "/villager/species/{species}", produces = { "application/json" })
     public List<Villager> bySpecies(@Parameter(description = "Villager species") @PathVariable String species) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/villager/species/" + species);
+        apiEventRepository.insertApiEvent(event);
         List<Villager> villagers = villagerRepository.findVillagersBySpecies(species);
         if(null == villagers || villagers.size() < 1){
             throw new SpeciesNotFoundException(species);
@@ -87,6 +100,9 @@ public class VillagerController {
     })
     @GetMapping(value = "/villager/song/{song}", produces = { "application/json" })
     public List<Villager> byFavoriteSong(@Parameter(description = "Favourite song") @PathVariable String song) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/villager/song/" + song);
+        apiEventRepository.insertApiEvent(event);
         List<Villager> villagers = villagerRepository.findVillagersByFavoriteSong(song);
         if(null == villagers || villagers.size() < 1){
             throw new SongNotFoundException(song);
@@ -103,6 +119,9 @@ public class VillagerController {
     @PostMapping(value = "/villager/odds", consumes = { "application/json" },
             produces = { "application/text" })
     public String chanceToFindVillager(@RequestBody VillagerPercentage villagerPercentage) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/villager/odds");
+        apiEventRepository.insertApiEvent(event);
         Villager wanted = villagerRepository.findVillagerByName(villagerPercentage.getWants());
         if(null == wanted) {
             throw new VillagerNotFoundException(villagerPercentage.getWants());
@@ -121,6 +140,9 @@ public class VillagerController {
     @PostMapping(value = "/villager/odds/nmt", consumes = { "application/json" },
             produces = { "application/text" })
     public String chanceToFindVillagerWithNmts(@RequestBody VillagerPercentageNmt villagerPercentageNmt) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/villager/odds/nmt");
+        apiEventRepository.insertApiEvent(event);
         Villager wanted = villagerRepository.findVillagerByName(villagerPercentageNmt.getWants());
         if(null == wanted) {
             throw new VillagerNotFoundException(villagerPercentageNmt.getWants());

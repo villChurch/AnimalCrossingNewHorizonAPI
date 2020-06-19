@@ -1,7 +1,9 @@
 package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Exceptions.FurnitureNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Furniture;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.FurnitureRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class FurnitureController {
 
     private final FurnitureRepository furnitureRepository;
-    FurnitureController(FurnitureRepository furnitureRepository){
+    private final ApiEventRepository apiEventRepository;
+    FurnitureController(FurnitureRepository furnitureRepository, ApiEventRepository apiEventRepository){
         this.furnitureRepository = furnitureRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Get furniture by name")
@@ -32,6 +36,9 @@ public class FurnitureController {
     })
     @GetMapping(value = "/furniture/{name}", produces = { "application/json" })
     public Furniture getFurnitureByName(@Parameter(description = "Furniture name") @PathVariable String name) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/furniture/" + name);
+        apiEventRepository.insertApiEvent(event);
         Furniture furniture = furnitureRepository.getFurnitureByName(name);
         if(null == furniture){
             throw new FurnitureNotFoundException(name);

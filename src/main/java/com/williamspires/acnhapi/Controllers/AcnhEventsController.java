@@ -1,8 +1,10 @@
 package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Exceptions.EventNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.acnhevents;
 import com.williamspires.acnhapi.Repositories.AcnhEventsRepository;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -22,9 +24,11 @@ import java.util.List;
 public class AcnhEventsController {
 
     private final AcnhEventsRepository acnhEventsRepository;
+    private final ApiEventRepository apiEventRepository;
 
-    AcnhEventsController(AcnhEventsRepository acnhEventsRepository){
+    AcnhEventsController(AcnhEventsRepository acnhEventsRepository, ApiEventRepository apiEventRepository){
         this.acnhEventsRepository = acnhEventsRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Find in game events")
@@ -35,6 +39,9 @@ public class AcnhEventsController {
     @GetMapping(value = "/events/{name}", produces = { "application/json", "application/text" })
     public List<acnhevents> getEventByName(@Parameter(description = "Name of event to search for")
                                                @PathVariable String name) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/events/" + name);
+        apiEventRepository.insertApiEvent(event);
         List<acnhevents> events = acnhEventsRepository.findEventsByEvent(name);
         if(null == events || events.size() < 1){
             throw new EventNotFoundException(name);

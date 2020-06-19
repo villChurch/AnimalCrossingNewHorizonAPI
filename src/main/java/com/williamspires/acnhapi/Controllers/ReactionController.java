@@ -2,7 +2,9 @@ package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Exceptions.ReactionNotFoundException;
 import com.williamspires.acnhapi.Exceptions.ReactionSourceNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Reactions;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.ReactionRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,8 +25,10 @@ import java.util.List;
 public class ReactionController {
 
     private final ReactionRepository reactionRepository;
-    ReactionController(ReactionRepository reactionRepository){
+    private final ApiEventRepository apiEventRepository;
+    ReactionController(ReactionRepository reactionRepository, ApiEventRepository apiEventRepository){
         this.reactionRepository = reactionRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Get reaction information by name")
@@ -35,6 +39,9 @@ public class ReactionController {
     })
     @GetMapping(value = "/reaction/{name}", produces = { "application/json" })
     public Reactions getReactionByName(@Parameter(description = "Reaction name") @PathVariable String name) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/reaction/" + name);
+        apiEventRepository.insertApiEvent(event);
         Reactions reaction = reactionRepository.findReactionsByName(name);
         if(null == reaction){
             throw new ReactionNotFoundException(name);
@@ -50,6 +57,9 @@ public class ReactionController {
     })
     @GetMapping(value = "/reaction/source/{source}", produces = { "application/json" })
     public List<Reactions> getReactionsBySource(@Parameter(description = "Villager personality") @PathVariable String source) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/reaction/source/" + source);
+        apiEventRepository.insertApiEvent(event);
         List<Reactions> reactions = reactionRepository.findReactionsBySource(source);
         if(null == reactions || reactions.size() < 1){
             throw new ReactionSourceNotFoundException(source);

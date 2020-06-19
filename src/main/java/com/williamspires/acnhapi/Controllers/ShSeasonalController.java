@@ -1,7 +1,9 @@
 package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Exceptions.ShrubNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.ShSeasonal;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.ShSeasonalRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,8 +24,10 @@ import java.util.List;
 public class ShSeasonalController {
 
     private final ShSeasonalRepository shSeasonalRepository;
-    ShSeasonalController(ShSeasonalRepository shSeasonalRepository){
+    private final ApiEventRepository apiEventRepository;
+    ShSeasonalController(ShSeasonalRepository shSeasonalRepository, ApiEventRepository apiEventRepository){
         this.shSeasonalRepository = shSeasonalRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Get shrub blossoms by name")
@@ -35,6 +39,9 @@ public class ShSeasonalController {
     @GetMapping(value = "/blossoms/sh/{shrub}", produces = { "application/json" })
     public List<ShSeasonal> getShrubBlossomSeasons(@Parameter(description = "Shrub name")
                                                        @PathVariable String shrub) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/blossoms/sh/" + shrub);
+        apiEventRepository.insertApiEvent(event);
         List<ShSeasonal> shrubs = shSeasonalRepository.findByBlossoms(shrub);
         if(null == shrubs || shrubs.size() < 1){
             throw new ShrubNotFoundException(shrub);

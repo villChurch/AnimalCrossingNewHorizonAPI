@@ -1,7 +1,9 @@
 package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Exceptions.ConstructionNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Construction;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.ConstructionRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConstructionController {
 
     private final ConstructionRepository constructionRepository;
-    ConstructionController(ConstructionRepository constructionRepository){
+    private final ApiEventRepository apiEventRepository;
+    ConstructionController(ConstructionRepository constructionRepository, ApiEventRepository apiEventRepository){
         this.constructionRepository = constructionRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Find construction counter item by name")
@@ -33,6 +37,9 @@ public class ConstructionController {
     @GetMapping("/construction/{name}")
     public Construction getConstructionByName(@Parameter(description = "Name of construction item")
                                                   @PathVariable String name) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/construction/" + name);
+        apiEventRepository.insertApiEvent(event);
         Construction construction = constructionRepository.findConstructionByName(name);
         if(null == construction){
             throw new ConstructionNotFoundException(name);

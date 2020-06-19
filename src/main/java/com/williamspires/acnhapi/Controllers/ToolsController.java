@@ -1,7 +1,9 @@
 package com.williamspires.acnhapi.Controllers;
 
 import com.williamspires.acnhapi.Exceptions.ToolsNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Tools;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.ToolRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,8 +24,10 @@ import java.util.List;
 public class ToolsController {
 
     private final ToolRepository toolRepository;
-    ToolsController(ToolRepository toolRepository){
+    private final ApiEventRepository apiEventRepository;
+    ToolsController(ToolRepository toolRepository, ApiEventRepository apiEventRepository){
         this.toolRepository = toolRepository;
+        this.apiEventRepository = apiEventRepository;
     }
 
     @Operation(summary = "Get tool by name")
@@ -34,6 +38,9 @@ public class ToolsController {
     })
     @GetMapping(value = "/tool/{name}", produces = { "application/json" })
     public List<Tools> getToolByName(@Parameter(description = "Tool name") @PathVariable String name) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/tool/" + name);
+        apiEventRepository.insertApiEvent(event);
         List<Tools> tools = toolRepository.findToolByName(name);
         if(null == tools || tools.size() < 1){
             throw new ToolsNotFoundException(name);
