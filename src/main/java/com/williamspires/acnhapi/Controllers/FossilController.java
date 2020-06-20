@@ -1,20 +1,48 @@
 package com.williamspires.acnhapi.Controllers;
 
+import com.williamspires.acnhapi.Exceptions.FossilNotFoundException;
+import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Fossil;
+import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.FossilRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Fossils", description = "Fossil information")
 @RestController
 public class FossilController {
 
-    @Autowired
-    FossilRepository fossilRepository;
+    private final FossilRepository fossilRepository;
+    private final ApiEventRepository apiEventRepository;
+    FossilController(FossilRepository fossilRepository, ApiEventRepository apiEventRepository){
+        this.fossilRepository = fossilRepository;
+        this.apiEventRepository = apiEventRepository;
+    }
 
-    @GetMapping("/fossils/{name}")
-    public Fossil getFossilByName(@PathVariable String name) {
-        return fossilRepository.findFossilByName(name);
+    @Operation(summary = "Returns fossil information by name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Fossil.class)))),
+            @ApiResponse(responseCode = "404", description = "Fossil not found")
+    })
+    @GetMapping(value = "/fossils/{name}", produces = { "application/json" })
+    public Fossil getFossilByName(@Parameter(description = "Fossil name") @PathVariable String name) {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/fossils/" + name);
+        apiEventRepository.insertApiEvent(event);
+        Fossil fossil = fossilRepository.findFossilByName(name);
+        if(null == fossil){
+            throw new FossilNotFoundException(name);
+        }
+        return fossil;
     }
 }
