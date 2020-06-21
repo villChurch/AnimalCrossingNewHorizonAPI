@@ -1,9 +1,9 @@
 package com.williamspires.acnhapi.unit.restControllers;
 
-import com.williamspires.acnhapi.Controllers.AcnhEventsController;
-import com.williamspires.acnhapi.Model.acnhevents;
-import com.williamspires.acnhapi.Repositories.AcnhEventsRepository;
+import com.williamspires.acnhapi.Controllers.ConstructionController;
+import com.williamspires.acnhapi.Model.Construction;
 import com.williamspires.acnhapi.Repositories.ApiEventRepository;
+import com.williamspires.acnhapi.Repositories.ConstructionRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,62 +20,58 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(AcnhEventsController.class)
-public class AcnhEventsControllerTest {
+@WebMvcTest(ConstructionController.class)
+public class ConstructionControllerTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
-    AcnhEventsRepository acnhEventsRepository;
+    ConstructionRepository constructionRepository;
     @MockBean
     ApiEventRepository apiEventRepository;
 
-    private com.williamspires.acnhapi.Model.acnhevents acnhevents;
+    private Construction construction;
 
     @Before
     public void setup() {
-        acnhevents = new acnhevents();
-        acnhevents.setEvent("Test");
-        acnhevents.setId(1);
-        acnhevents.setNothernHemisphereDates("Test Date");
-        acnhevents.setSouthernHemisphereDates("Test Date");
-        acnhevents.setTimes("Test Time");
+        construction = new Construction();
+        construction.setBuy(100);
+        construction.setCategory("Category");
+        construction.setFilename("FileName");
+        construction.setName("Name");
+        construction.setSource("Source");
+        construction.setUniqueEntryID("Unique");
+        construction.setVersion("1.2.0");
     }
 
     @Test
-    public void EventIsReturnedWhenOneExists() throws Exception {
-        List<acnhevents> events = new ArrayList<>();
-        events.add(acnhevents);
-        Mockito.when(acnhEventsRepository.findEventsByEvent(Mockito.anyString())).thenReturn(events);
+    public void ConstructionItemShouldBeReturnedWhenItExists() throws Exception {
+        Mockito.when(constructionRepository.findConstructionByName(Mockito.anyString())).thenReturn(construction);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/events/Test")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/construction/Name")
                 .accept(MediaType.APPLICATION_JSON);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-        MockHttpServletResponse response = result.getResponse();
-        String expected = "[{\"id\":1,\"event\":\"Test\",\"nothernHemisphereDates\":\"Test Date\",\"southernHemisphereDates\":\"Test Date\",\"times\":\"Test Time\"}]";
+        MockHttpServletResponse response  = result.getResponse();
+        String expected = "{\"uniqueEntryID\":\"Unique\",\"name\":\"Name\",\"buy\":100,\"category\":\"Category\",\"source\":\"Source\",\"filename\":\"FileName\",\"version\":\"1.2.0\"}";
         JSONAssert.assertEquals(expected, response.getContentAsString(), true);
         assertThat(response.getStatus()).isEqualTo(200);
     }
 
     @Test
     public void shouldReturn404WhenEventDoesNotExist() throws Exception {
-        Mockito.when(acnhEventsRepository.findEventsByEvent(Mockito.anyString())).thenReturn(null);
+        Mockito.when(constructionRepository.findConstructionByName(Mockito.anyString())).thenReturn(null);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/events/404")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/construction/404")
                 .accept(MediaType.APPLICATION_JSON);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
         MockHttpServletResponse response = result.getResponse();
         assertThat(response.getStatus()).isEqualTo(404);
-        assertThat(response.getContentAsString()).isEqualTo("Could not find event with name 404");
+        assertThat(response.getContentAsString()).isEqualTo("Could not find construction item called 404");
     }
-
 }

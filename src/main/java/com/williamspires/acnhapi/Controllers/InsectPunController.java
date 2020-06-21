@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Tag(name = "Insect Puns", description = "Returns insect puns")
 @RestController
@@ -38,9 +39,8 @@ public class InsectPunController {
         event.setPath("/puns/insect");
         apiEventRepository.insertApiEvent(event);
         List<InsectPuns> allPuns = insectPunRepository.getAllInsectPuns();
-        int randomNumber = (int) (Math.random() * (allPuns.size() + 1));
-        System.out.println(randomNumber);
-        allPuns.get(randomNumber).setText(allPuns.get(randomNumber).getText().replaceAll("\\u000e", " "));
-        return allPuns.get(randomNumber);
+        int random = ThreadLocalRandom.current().nextInt(0, (allPuns.size()));
+        allPuns.get(random).setText(allPuns.get(random).getText().replaceAll("\\u000e", " "));
+        return allPuns.get(random);
     }
 }
