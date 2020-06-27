@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Tag(name = "Fish puns", description = "Returns Fish puns")
 @RestController
@@ -35,11 +36,11 @@ public class FishPunController {
     @GetMapping(value = "/puns/fish", produces = { "application/json" })
     public FishPuns getRandomFishPun() {
         List<FishPuns> allPuns = fishPunRepository.getAllFishPuns();
-        int randomNumber = (int) (Math.random() * (allPuns.size() + 1));
-        allPuns.get(randomNumber).setText(allPuns.get(randomNumber).getText().replaceAll("\\u000e", " "));
+        int random = ThreadLocalRandom.current().nextInt(0, (allPuns.size()));
+        allPuns.get(random).setText(allPuns.get(random).getText().replaceAll("\\u000e", " "));
         ApiEvent event = new ApiEvent();
         event.setPath("/puns/fish");
         apiEventRepository.insertApiEvent(event);
-        return allPuns.get(randomNumber);
+        return allPuns.get(random);
     }
 }
