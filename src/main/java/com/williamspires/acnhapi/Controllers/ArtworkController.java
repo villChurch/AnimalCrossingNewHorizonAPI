@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Tag(name = "Artwork and Statues", description = "Information on Artwork and Statues from Redd")
 @RestController
@@ -105,8 +106,6 @@ public class ArtworkController {
         ApiEvent event = new ApiEvent();
         event.setPath("/artwork/random");
         apiEventRepository.insertApiEvent(event);
-        List<Artwork> realArtwork = artworkRepository.getAllRealArtwork();
-        List<Artwork> fakeArtwork = artworkRepository.getAllFakeArtwork();
         /*
         - 10% - 1 fake, 3 real
         - 30% - 2 fake, 2 real
@@ -117,11 +116,13 @@ public class ArtworkController {
                 .add(60, "fake").add(40, "real");
         String nextArtwork = rc.next().toString();
         if(nextArtwork.equalsIgnoreCase("real")) {
-            int randomNumber = (int) (Math.random() * realArtwork.size() + 1);
-            return realArtwork.get(randomNumber);
+            List<Artwork> realArtwork = artworkRepository.getAllRealArtwork();
+            int random = ThreadLocalRandom.current().nextInt(0, realArtwork.size());
+            return realArtwork.get(random);
         } else {
-            int randomNumber = (int) (Math.random() * fakeArtwork.size() + 1);
-            return fakeArtwork.get(randomNumber);
+            List<Artwork> fakeArtwork = artworkRepository.getAllFakeArtwork();
+            int random = ThreadLocalRandom.current().nextInt(0, fakeArtwork.size());
+            return fakeArtwork.get(random);
         }
     }
 
