@@ -25,7 +25,7 @@ public class AllController {
                          FossilRepository fossilRepository, ArtworkRepository artworkRepository,
                          AcnhEventsRepository acnhEventsRepository, OutfitRepository outfitRepository,
                          NhSeasonalRepository nhSeasonalRepository, ShSeasonalRepository shSeasonalRepository,
-                         ApiEventRepository apiEventRepository)
+                         ApiEventRepository apiEventRepository, SeaCreatureRepository seaCreatureRepository)
     {
         this.villagerRepository = villagerRepository;
         this.fishRepository = fishRepository;
@@ -42,6 +42,7 @@ public class AllController {
         this.nhSeasonalRepository = nhSeasonalRepository;
         this.shSeasonalRepository = shSeasonalRepository;
         this.apiEventRepository = apiEventRepository;
+        this.seaCreatureRepository = seaCreatureRepository;
     }
 
     VillagerRepository villagerRepository;
@@ -59,6 +60,7 @@ public class AllController {
     NhSeasonalRepository nhSeasonalRepository;
     ShSeasonalRepository shSeasonalRepository;
     private final ApiEventRepository apiEventRepository;
+    private final SeaCreatureRepository seaCreatureRepository;
 
     @Operation(summary = "Returns all villagers")
     @ApiResponses(value = {
@@ -240,5 +242,18 @@ public class AllController {
         event.setPath("/all/blossoms/sh");
         apiEventRepository.insertApiEvent(event);
         return shSeasonalRepository.getAllShBlossoms();
+    }
+
+    @Operation(summary = "Returns all insects")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Insect.class))))
+    })
+    @GetMapping("/all/seacreatures")
+    public List<SeaCreatures> getAllSeaCreatures() {
+        ApiEvent event = new ApiEvent();
+        event.setPath("/all/seacreatures");
+        apiEventRepository.insertApiEvent(event);
+        return seaCreatureRepository.getAllSeaCreatures();
     }
 }
