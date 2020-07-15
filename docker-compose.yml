@@ -1,0 +1,36 @@
+version: '3'
+services:
+  acnhapi:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://acnhapi-mysql:3306/acnh?serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${PASSWORD}
+    links:
+      - acnhapi-mysql
+    depends_on:
+      - "acnhapi-mysql"
+
+  acnhapi-mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password' # change if works
+      MYSQL_USER: '${USERNAME}'
+      MYSQL_PASS: '${PASSWORD}'
+    volumes:
+      - $PWD/data/mysql:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: acnhapi-phpmyadmin
+    links:
+      - acnhapi-mysql
+    environment:
+      PMA_HOST: acnhapi-mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 300000000
+    restart: always
+    ports:
+      - 8183:80
