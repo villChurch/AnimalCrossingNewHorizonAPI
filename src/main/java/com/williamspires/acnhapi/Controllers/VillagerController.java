@@ -10,6 +10,7 @@ import com.williamspires.acnhapi.Model.VillagerPercentage;
 import com.williamspires.acnhapi.Model.VillagerPercentageNmt;
 import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.VillagerRepository;
+import com.williamspires.acnhapi.Utils.LevenshteinDistance;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -18,12 +19,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.*;
 
+@Slf4j
 @Tag(name = "Villagers", description = "Information about villagers")
 @RestController
 public class VillagerController {
@@ -50,7 +53,20 @@ public class VillagerController {
         apiEventRepository.insertApiEvent(event);
         Villager searchFor = villagerRepository.findVillagerByName(name);
         if (null == searchFor) {
-            throw new VillagerNotFoundException(name);
+            List<Villager> villagers = villagerRepository.getAllVillagers();
+            Map<String, Integer> likeness = new HashMap<>();
+            villagers.forEach(villager -> likeness.put(villager.getName(),
+                    LevenshteinDistance.percentage(name.toLowerCase(), villager.getName().toLowerCase())));
+            String key =
+                    Collections.max(likeness.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+            log.warn("Villager was not found called {} but one was found called {} with a {}% match to search term",
+                    name, key, likeness.get(key));
+            if (likeness.get(key) >= 75) {
+                log.info("Likeness was above or equal to 75% at {}% so returning villager called {}", likeness.get(key), key);
+                return villagerRepository.findVillagerByName(key);
+            } else {
+                throw new VillagerNotFoundException(name);
+            }
         }
         return searchFor;
     }
