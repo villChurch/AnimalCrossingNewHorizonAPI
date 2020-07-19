@@ -36,7 +36,7 @@ public class InsectController {
                     LevenshteinDistance.percentage(name.toLowerCase(), insect1.getName().toLowerCase())));
             String key =
                     Collections.max(likeness.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
-            log.warn("Villager was not found called {} but one was found called {} with a {}% match to search term",
+            log.warn("Insect was not found called {} but one was found called {} with a {}% match to search term",
                     name, key, likeness.get(key));
             if (likeness.get(key) >= 75) {
                 event.setPath("/insect/" + key);

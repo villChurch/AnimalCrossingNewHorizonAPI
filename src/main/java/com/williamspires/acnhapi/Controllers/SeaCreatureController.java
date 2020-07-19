@@ -5,12 +5,15 @@ import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.SeaCreatures;
 import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.SeaCreatureRepository;
+import com.williamspires.acnhapi.Utils.LevenshteinDistance;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.*;
 
+@Slf4j
 @RestController
 public class SeaCreatureController {
 
@@ -25,11 +28,24 @@ public class SeaCreatureController {
     public SeaCreatures getSeaCreaturesByName(@PathVariable String name) {
         ApiEvent event = new ApiEvent();
         event.setPath("/seacreature/" + name);
-        apiEventRepository.insertApiEvent(event);
         SeaCreatures seacreature = seacreatureRepository.findSeaCreatureByName(name);
         if(null == seacreature){
-            throw new SeaCreatureNotFoundException(name);
+            List<SeaCreatures> seaCreatures = seacreatureRepository.getAllSeaCreatures();
+            Map<String, Integer> likeness = new HashMap<>();
+            seaCreatures.forEach(seaCreatures1 -> likeness.put(seaCreatures1.getName(),
+                    LevenshteinDistance.percentage(name.toLowerCase(), seaCreatures1.getName().toLowerCase())));
+            String key = Collections.max(likeness.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+            log.warn("Sea Creature was not found called {} but one was found called {} with a {}% match to search term",
+                    name, key, likeness.get(key));
+            if (likeness.get(key) >= 75) {
+                event.setPath("/seacreature/" + key);
+                log.info("Likeness was above or equal to 75% at {}% so returning sea creature named {}", likeness.get(key), key);
+                return seacreatureRepository.findSeaCreatureByName(key);
+            } else {
+                throw new SeaCreatureNotFoundException(name);
+            }
         }
+        apiEventRepository.insertApiEvent(event);
         return seacreature;
     }
 
