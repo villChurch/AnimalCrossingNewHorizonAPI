@@ -5,12 +5,15 @@ import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Insect;
 import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.InsectRepository;
+import com.williamspires.acnhapi.Utils.LevenshteinDistance;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.*;
 
+@Slf4j
 @RestController
 public class InsectController {
 
@@ -25,11 +28,25 @@ public class InsectController {
     public Insect getInsectByName(@PathVariable String name) {
         ApiEvent event = new ApiEvent();
         event.setPath("/insect/" + name);
-        apiEventRepository.insertApiEvent(event);
         Insect insect = insectRepository.findInsectByName(name);
         if(null == insect){
-            throw new InsectNotFoundException(name);
+            List<Insect> insects = insectRepository.getAllInsects();
+            Map<String, Integer> likeness = new HashMap<>();
+            insects.forEach(insect1 -> likeness.put(insect1.getName(),
+                    LevenshteinDistance.percentage(name.toLowerCase(), insect1.getName().toLowerCase())));
+            String key =
+                    Collections.max(likeness.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+            log.warn("Villager was not found called {} but one was found called {} with a {}% match to search term",
+                    name, key, likeness.get(key));
+            if (likeness.get(key) >= 75) {
+                event.setPath("/insect/" + key);
+                log.info("Likeness was above or equal to 75% at {}% so returning insect named {}", likeness.get(key), key);
+                return  insectRepository.findInsectByName(key);
+            } else {
+                throw new InsectNotFoundException(name);
+            }
         }
+        apiEventRepository.insertApiEvent(event);
         return insect;
     }
 

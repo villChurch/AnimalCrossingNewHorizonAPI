@@ -50,7 +50,6 @@ public class VillagerController {
     public Villager byName(@Parameter(description = "Villager name") @PathVariable String name) {
         ApiEvent event = new ApiEvent();
         event.setPath("/villager/" + name);
-        apiEventRepository.insertApiEvent(event);
         Villager searchFor = villagerRepository.findVillagerByName(name);
         if (null == searchFor) {
             List<Villager> villagers = villagerRepository.getAllVillagers();
@@ -62,12 +61,14 @@ public class VillagerController {
             log.warn("Villager was not found called {} but one was found called {} with a {}% match to search term",
                     name, key, likeness.get(key));
             if (likeness.get(key) >= 75) {
+                event.setPath("/villager/" + key);
                 log.info("Likeness was above or equal to 75% at {}% so returning villager called {}", likeness.get(key), key);
                 return villagerRepository.findVillagerByName(key);
             } else {
                 throw new VillagerNotFoundException(name);
             }
         }
+        apiEventRepository.insertApiEvent(event);
         return searchFor;
     }
 
