@@ -16,7 +16,7 @@ services:
   acnhapi-mysql:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: 'password' # change if works
+      MYSQL_ROOT_PASSWORD: '${ROOT_PASSWORD}'
       MYSQL_USER: '${USERNAME}'
       MYSQL_PASS: '${PASSWORD}'
     volumes:
