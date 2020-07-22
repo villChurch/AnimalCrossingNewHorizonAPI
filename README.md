@@ -32,7 +32,7 @@ We use [SemVer](http://semver.org/) for versioning. For the released and upcommi
 
 * **Will (VillChurch#2599)** - *Main API work* - [Will](https://github.com/villChurch)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/villChurch/AnimalCrossingNewHorizonAPI/contributors) who participated in this project.
 
 ## License
 
