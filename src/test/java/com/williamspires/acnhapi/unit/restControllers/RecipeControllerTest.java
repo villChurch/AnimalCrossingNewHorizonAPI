@@ -22,6 +22,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -89,8 +92,10 @@ public class RecipeControllerTest {
 
     @Test
     public void shouldReturn404WhenRecipeDoesNotExist() throws Exception {
+        List<Recipes> recipes = new ArrayList<>();
+        recipes.add(testRecipe);
         Mockito.when(recipesRepository.findRecipesByName(Mockito.anyString())).thenReturn(null);
-
+        Mockito.when(recipesRepository.getAllRecipes()).thenReturn(recipes);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/diy/404")
                 .accept(MediaType.ALL);
 

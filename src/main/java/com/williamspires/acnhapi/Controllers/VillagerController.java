@@ -10,6 +10,7 @@ import com.williamspires.acnhapi.Model.VillagerPercentage;
 import com.williamspires.acnhapi.Model.VillagerPercentageNmt;
 import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.VillagerRepository;
+import com.williamspires.acnhapi.Utils.LevenshteinDistance;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -18,12 +19,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Tag(name = "Villagers", description = "Information about villagers")
 @RestController
 public class VillagerController {
@@ -47,11 +51,25 @@ public class VillagerController {
     public Villager byName(@Parameter(description = "Villager name") @PathVariable String name) {
         ApiEvent event = new ApiEvent();
         event.setPath("/villager/" + name);
-        apiEventRepository.insertApiEvent(event);
         Villager searchFor = villagerRepository.findVillagerByName(name);
         if (null == searchFor) {
-            throw new VillagerNotFoundException(name);
+            List<Villager> villagers = villagerRepository.getAllVillagers();
+            Map<String, Integer> likeness = new HashMap<>();
+            villagers.forEach(villager -> likeness.put(villager.getName(),
+                    LevenshteinDistance.percentage(name.toLowerCase(), villager.getName().toLowerCase())));
+            String key =
+                    Collections.max(likeness.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+            log.warn("Villager was not found called {} but one was found called {} with a {}% match to search term",
+                    name, key, likeness.get(key));
+            if (likeness.get(key) >= 75) {
+                event.setPath("/villager/" + key);
+                log.info("Likeness was above or equal to 75% at {}% so returning villager called {}", likeness.get(key), key);
+                return villagerRepository.findVillagerByName(key);
+            } else {
+                throw new VillagerNotFoundException(name);
+            }
         }
+        apiEventRepository.insertApiEvent(event);
         return searchFor;
     }
 
@@ -84,11 +102,26 @@ public class VillagerController {
     public List<Villager> bySpecies(@Parameter(description = "Villager species") @PathVariable String species) {
         ApiEvent event = new ApiEvent();
         event.setPath("/villager/species/" + species);
-        apiEventRepository.insertApiEvent(event);
         List<Villager> villagers = villagerRepository.findVillagersBySpecies(species);
         if(null == villagers || villagers.size() < 1){
-            throw new SpeciesNotFoundException(species);
+            List<String> speciesList = villagerRepository.getAllVillagers().stream()
+                    .map(Villager::getSpecies).collect(Collectors.toList());
+            Map<String, Integer> likeness = new HashMap<>();
+            speciesList.forEach(type -> likeness.put(type,
+                    LevenshteinDistance.percentage(species.toLowerCase(), type.toLowerCase())));
+            String key =
+                    Collections.max(likeness.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+            log.warn("Species was not found called {} but one was found called {} with a {}% match to search term",
+                    species, key, likeness.get(key));
+            if (likeness.get(key) >= 75) {
+                event.setPath("/villager/species/" + species);
+                log.info("Likeness was above or equal to 75% at {}% so returning species called {}", likeness.get(key), key);
+                return villagerRepository.findVillagersBySpecies(key);
+            } else {
+                throw new SpeciesNotFoundException(species);
+            }
         }
+        apiEventRepository.insertApiEvent(event);
         return villagers;
     }
 

@@ -5,6 +5,7 @@ import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Artwork;
 import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.ArtworkRepository;
+import com.williamspires.acnhapi.Utils.LevenshteinDistance;
 import com.williamspires.acnhapi.Utils.RandomCollection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,13 +15,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Slf4j
 @Tag(name = "Artwork and Statues", description = "Information on Artwork and Statues from Redd")
 @RestController
 public class ArtworkController {
@@ -43,11 +46,25 @@ public class ArtworkController {
                                       @PathVariable String name){
         ApiEvent event = new ApiEvent();
         event.setPath("/artwork/real/" + name);
-        apiEventRepository.insertApiEvent(event);
         Artwork artwork = artworkRepository.getArtworkByNameAndReal(name, true);
         if(null == artwork){
-            throw new ArtworkNotFoundException(name);
+            List<Artwork> realArtwork = artworkRepository.getAllRealArtwork();
+            Map<String, Integer> likeness = new HashMap<>();
+            realArtwork.forEach(art -> likeness.put(art.getName(),
+                    LevenshteinDistance.percentage(name.toLowerCase(), art.getName().toLowerCase())));
+            String key =
+                    Collections.max(likeness.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+            log.warn("Real artwork was not found called {} but one was found called {} with a {}% match to search term",
+                    name, key, likeness.get(key));
+            if (likeness.get(key) >= 75) {
+                event.setPath("/artwork/real/" + key);
+                log.info("Likeness was above or equal to 75% at {}% so returning real artwork called {}", likeness.get(key), key);
+                return artworkRepository.getArtworkByNameAndReal(key, true);
+            } else {
+                throw new ArtworkNotFoundException(name);
+            }
         }
+        apiEventRepository.insertApiEvent(event);
         return  artwork;
     }
 
@@ -62,11 +79,25 @@ public class ArtworkController {
                                       @PathVariable String name){
         ApiEvent event = new ApiEvent();
         event.setPath("/artwork/fake/" + name);
-        apiEventRepository.insertApiEvent(event);
         Artwork artwork = artworkRepository.getArtworkByNameAndReal(name, false);
         if(null == artwork){
-            throw new ArtworkNotFoundException(name);
+            List<Artwork> fakeArtwork = artworkRepository.getAllFakeArtwork();
+            Map<String, Integer> likeness = new HashMap<>();
+            fakeArtwork.forEach(fakeArt -> likeness.put(fakeArt.getName(),
+                    LevenshteinDistance.percentage(name.toLowerCase(), fakeArt.getName().toLowerCase())));
+            String key =
+                    Collections.max(likeness.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+            log.warn("Fake art was not found called {} but one was found called {} with a {}% match to search term",
+                    name, key, likeness.get(key));
+            if (likeness.get(key) >= 75) {
+                event.setPath("/artwork/fake/" + name);
+                log.info("Likeness was above or equal to 75% at {}% so returning fake artwork called {}", likeness.get(key), key);
+                return artworkRepository.getArtworkByNameAndReal(key, false);
+            } else {
+                throw new ArtworkNotFoundException(name);
+            }
         }
+        apiEventRepository.insertApiEvent(event);
         return  artwork;
     }
 

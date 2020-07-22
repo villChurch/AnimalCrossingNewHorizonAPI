@@ -5,6 +5,7 @@ import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Recipes;
 import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.RecipesRepository;
+import com.williamspires.acnhapi.Utils.LevenshteinDistance;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,10 +14,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.*;
+
+@Slf4j
 @Tag(name = "DIYs", description = "Information about DIYs")
 @RestController
 public class RecipeController {
@@ -38,11 +43,25 @@ public class RecipeController {
     public Recipes getByName(@Parameter(description = "DIY name") @PathVariable String name) {
         ApiEvent event = new ApiEvent();
         event.setPath("/diy/" + name);
-        apiEventRepository.insertApiEvent(event);
         Recipes recipe = recipesRepository.findRecipesByName(name);
         if(null == recipe){
-            throw new RecipeNotFoundException(name);
+            List<Recipes> recipes = recipesRepository.getAllRecipes();
+            Map<String, Integer> likeness = new HashMap<>();
+            recipes.forEach(recipes1 -> likeness.put(recipes1.getName(),
+                    LevenshteinDistance.percentage(name.toLowerCase(), recipes1.getName().toLowerCase())));
+            String key =
+                    Collections.max(likeness.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+            log.warn("Recipe was not found called {} but one was found called {} with a {}% match to search term",
+                    name, key, likeness.get(key));
+            if (likeness.get(key) >= 75) {
+                event.setPath("/diy/" + key);
+                log.info("Likeness was above or equal to 75% at {}% so returning recipe named {}", likeness.get(key), key);
+                return recipesRepository.findRecipesByName(key);
+            } else {
+                throw new RecipeNotFoundException(name);
+            }
         }
+        apiEventRepository.insertApiEvent(event);
         return recipe;
     }
 
