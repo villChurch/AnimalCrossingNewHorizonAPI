@@ -152,7 +152,10 @@ public class VillagerControllerTest {
 
     @Test
     public void shouldReturn404WhenNoVillagersOfThatSpeciesExist() throws Exception {
+        List<Villager> villagers = new ArrayList<>();
+        villagers.add(testVillager);
         Mockito.when(villagerRepository.findVillagersBySpecies(Mockito.anyString())).thenReturn(null);
+        Mockito.when(villagerRepository.getAllVillagers()).thenReturn(villagers);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/villager/species/404")
                 .accept(MediaType.ALL);
 

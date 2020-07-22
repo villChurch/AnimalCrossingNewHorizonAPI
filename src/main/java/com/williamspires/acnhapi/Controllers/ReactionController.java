@@ -6,6 +6,7 @@ import com.williamspires.acnhapi.Model.ApiEvent;
 import com.williamspires.acnhapi.Model.Reactions;
 import com.williamspires.acnhapi.Repositories.ApiEventRepository;
 import com.williamspires.acnhapi.Repositories.ReactionRepository;
+import com.williamspires.acnhapi.Utils.LevenshteinDistance;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -14,12 +15,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.*;
 
+@Slf4j
 @Tag(name = "Reactions", description = "Information on reactions")
 @RestController
 public class ReactionController {
@@ -41,11 +44,25 @@ public class ReactionController {
     public Reactions getReactionByName(@Parameter(description = "Reaction name") @PathVariable String name) {
         ApiEvent event = new ApiEvent();
         event.setPath("/reaction/" + name);
-        apiEventRepository.insertApiEvent(event);
         Reactions reaction = reactionRepository.findReactionsByName(name);
         if(null == reaction){
-            throw new ReactionNotFoundException(name);
+            List<Reactions> reactions = reactionRepository.findAll();
+            Map<String, Integer> likeness = new HashMap<>();
+            reactions.forEach(react -> likeness.put(react.getName(),
+                    LevenshteinDistance.percentage(name.toLowerCase(), react.getName().toLowerCase())));
+            String key =
+                    Collections.max(likeness.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+            log.warn("Reaction was not found called {} but one was found called {} with a {}% match to search term",
+                    name, key, likeness.get(key));
+            if (likeness.get(key) >= 75) {
+                event.setPath("/reaction/" + key);
+                log.info("Likeness was above or equal to 75% at {}% so returning reaction called {}", likeness.get(key), key);
+                return reactionRepository.findReactionsByName(key);
+            } else {
+                throw new ReactionNotFoundException(name);
+            }
         }
+        apiEventRepository.insertApiEvent(event);
         return reaction;
     }
 

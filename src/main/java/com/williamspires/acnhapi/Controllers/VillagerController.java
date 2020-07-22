@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Tag(name = "Villagers", description = "Information about villagers")
@@ -101,11 +102,26 @@ public class VillagerController {
     public List<Villager> bySpecies(@Parameter(description = "Villager species") @PathVariable String species) {
         ApiEvent event = new ApiEvent();
         event.setPath("/villager/species/" + species);
-        apiEventRepository.insertApiEvent(event);
         List<Villager> villagers = villagerRepository.findVillagersBySpecies(species);
         if(null == villagers || villagers.size() < 1){
-            throw new SpeciesNotFoundException(species);
+            List<String> speciesList = villagerRepository.getAllVillagers().stream()
+                    .map(Villager::getSpecies).collect(Collectors.toList());
+            Map<String, Integer> likeness = new HashMap<>();
+            speciesList.forEach(type -> likeness.put(type,
+                    LevenshteinDistance.percentage(species.toLowerCase(), type.toLowerCase())));
+            String key =
+                    Collections.max(likeness.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+            log.warn("Species was not found called {} but one was found called {} with a {}% match to search term",
+                    species, key, likeness.get(key));
+            if (likeness.get(key) >= 75) {
+                event.setPath("/villager/species/" + species);
+                log.info("Likeness was above or equal to 75% at {}% so returning species called {}", likeness.get(key), key);
+                return villagerRepository.findVillagersBySpecies(key);
+            } else {
+                throw new SpeciesNotFoundException(species);
+            }
         }
+        apiEventRepository.insertApiEvent(event);
         return villagers;
     }
 
