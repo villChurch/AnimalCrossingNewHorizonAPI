@@ -26,7 +26,7 @@ If you would like to contribute then feel free to get in touch on discord (VillC
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the released and upcomming versions, see the [tags on this repository](https://github.com/your/project/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the released and upcomming versions, see the [tags on this repository](https://github.com/villChurch/AnimalCrossingNewHorizonAPI/tags). 
 
 ## Authors
 
