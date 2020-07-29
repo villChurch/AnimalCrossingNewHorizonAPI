@@ -17,12 +17,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.zone.ZoneRulesException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,10 +67,10 @@ public class BirthdayController {
              zoneId = ZoneId.of(offset);
         } catch (ZoneRulesException zre) {
             log.error("Zone id provided {} does not have a corresponding region ID", offset);
-            return null;
+            throw new ZoneRulesException("Zone id provided " + offset + " does not have a corresponding region", zre);
         } catch (DateTimeException dte) {
             log.error("Zone id {} has an invalid format", offset);
-            return null;
+            throw new DateTimeException("Zone id " + offset + " is in an invalid offset/format", dte);
         } catch (Exception ex) {
             log.error("An unexpected error has happened");
             ex.printStackTrace();
@@ -118,5 +116,25 @@ public class BirthdayController {
         } else {
             return villager.getName() + "'s birthday is on " + villager.getBirthday();
         }
+    }
+
+    @Operation(summary = "Gets birthdays on a given date")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Villager.class))))
+    })
+    @GetMapping("/birthday/date/{date}")
+    public List<Villager> getVillagersBirthdayOnGivenDate(@Parameter(description = "Date in dd-mm format")
+                                                          @PathVariable String date) {
+        LocalDate localDate = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR),
+                Integer.parseInt(date.split("-")[1]),Integer.parseInt(date.split("-")[0]));
+        LocalDateTime localDateTime = localDate.atTime(0,0);
+        ZonedDateTime givenDateZoned = ZonedDateTime.of(localDateTime, ZoneId.of("UTC"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM");
+        String dateToSearchFor = formatter.format(givenDateZoned);
+        List<Villager> matchedVillagers = villagerRepository.getAllVillagers().stream()
+                .filter(villager -> villager.getBirthday().equals(dateToSearchFor))
+                .collect(Collectors.toList());
+        return matchedVillagers;
     }
 }
