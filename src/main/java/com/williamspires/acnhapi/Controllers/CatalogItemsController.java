@@ -41,7 +41,7 @@ public class CatalogItemsController {
                 .map(CatalogItems::getName)
                 .collect(Collectors.toList());
         List<String> missingItems = allItems.stream()
-                .filter(item -> !ownedItems.contains(item))
+                .filter(item -> !ownedItems.contains(item.toLowerCase()))
                 .sorted()
                 .collect(Collectors.toList());
         return missingItems;
@@ -56,7 +56,7 @@ public class CatalogItemsController {
                 .map(CatalogItems::getName)
                 .collect(Collectors.toList());
         List<String> missingItems = allItems.stream()
-                .filter(item -> !ownedItems.contains(item) || !ownedItems.contains(item.toLowerCase()))
+                .filter(item -> !ownedItems.contains(item.toLowerCase()))
                 .sorted()
                 .collect(Collectors.toList());
         webPageDownloader.writeToFile(missingItems, link);
