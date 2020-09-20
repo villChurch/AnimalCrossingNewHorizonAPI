@@ -130,7 +130,7 @@ public class BirthdayController {
                 Integer.parseInt(date.split("-")[1]),Integer.parseInt(date.split("-")[0]));
         LocalDateTime localDateTime = localDate.atTime(0,0);
         ZonedDateTime givenDateZoned = ZonedDateTime.of(localDateTime, ZoneId.of("UTC"));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM");
         String dateToSearchFor = formatter.format(givenDateZoned);
         List<Villager> matchedVillagers = villagerRepository.getAllVillagers().stream()
                 .filter(villager -> villager.getBirthday().equals(dateToSearchFor))

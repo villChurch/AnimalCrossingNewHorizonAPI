@@ -1,6 +1,8 @@
 package com.williamspires.acnhapi.Controllers;
 
+import com.williamspires.acnhapi.Model.AllCatalogItems;
 import com.williamspires.acnhapi.Model.CatalogItems;
+import com.williamspires.acnhapi.Repositories.AllCatalogItemsRepository;
 import com.williamspires.acnhapi.Repositories.CatalogItemsRepostiory;
 import com.williamspires.acnhapi.Utils.WebPageDownloader;
 import org.springframework.core.io.ByteArrayResource;
@@ -23,9 +25,12 @@ import java.util.stream.Collectors;
 public class CatalogItemsController {
 
     private final CatalogItemsRepostiory catalogItemsRepostiory;
+    private final AllCatalogItemsRepository allCatalogItemsRepository;
 
-    CatalogItemsController(CatalogItemsRepostiory catalogItemsRepostiory) {
+    CatalogItemsController(CatalogItemsRepostiory catalogItemsRepostiory,
+                           AllCatalogItemsRepository allCatalogItemsRepository) {
         this.catalogItemsRepostiory = catalogItemsRepostiory;
+        this.allCatalogItemsRepository = allCatalogItemsRepository;
     }
 
     @GetMapping("/catalogItems/all")
@@ -47,29 +52,68 @@ public class CatalogItemsController {
         return missingItems;
     }
 
-    @GetMapping("/catalogItems/ne/{link}")
+    @GetMapping("/catalogItems/all/{link}")
     @ResponseBody
-    public ResponseEntity<ByteArrayResource> downloadNEImport(@PathVariable String link) throws IOException {
-        WebPageDownloader webPageDownloader = new WebPageDownloader();
-        List<String> ownedItems = webPageDownloader.getPageInfo("https://ehsan.lol/" + link + "/raw");
-        List<String> allItems = catalogItemsRepostiory.getAllItems().stream()
-                .map(CatalogItems::getName)
+    public List<String> getAllMissingItems(@PathVariable String link ){
+        List<String> ownedItems = new WebPageDownloader().getPageInfo("https://ehsan.lol/" + link + "/raw");
+        List<String> allItems = allCatalogItemsRepository.getAllItems().stream()
+                .map(AllCatalogItems::getName)
                 .collect(Collectors.toList());
         List<String> missingItems = allItems.stream()
                 .filter(item -> !ownedItems.contains(item.toLowerCase()))
                 .sorted()
                 .collect(Collectors.toList());
-        webPageDownloader.writeToFile(missingItems, link);
-
-//        return new FileSystemResource(new File(link+".txt"));
+        return missingItems;
+    }
+    @GetMapping("/catalogItems/ne/{link}")
+    @ResponseBody
+    public ResponseEntity<ByteArrayResource> downloadNEImport(@PathVariable String link) throws IOException {
+        File testFile = new File(link+".txt");
+        if(!testFile.exists() && !testFile.isDirectory()) {
+            WebPageDownloader webPageDownloader = new WebPageDownloader();
+            List<String> ownedItems = webPageDownloader.getPageInfo("https://ehsan.lol/" + link + "/raw");
+            List<String> allItems = catalogItemsRepostiory.getAllItems().stream()
+                    .map(CatalogItems::getName)
+                    .collect(Collectors.toList());
+            List<String> missingItems = allItems.stream()
+                    .filter(item -> !ownedItems.contains(item.toLowerCase()))
+                    .sorted()
+                    .collect(Collectors.toList());
+            webPageDownloader.writeToFile(missingItems, link);
+        }
 
         File file = new File(link+".txt");
         Path path = Paths.get(file.getAbsolutePath());
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 
         return ResponseEntity.ok()
-//                .headers(headers)
                 .contentLength(file.length())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
+
+    @GetMapping("/catalogItems/all/ne/{link}")
+    @ResponseBody
+    public ResponseEntity<ByteArrayResource> downloadAllNeImport(@PathVariable String link) throws IOException {
+        File testFile = new File("all"+link+".txt");
+        if(!testFile.exists() && !testFile.isDirectory()) {
+            WebPageDownloader webPageDownloader = new WebPageDownloader();
+            List<String> ownedItems = webPageDownloader.getPageInfo("https://ehsan.lol/" + link + "/raw");
+            List<String> allItems = allCatalogItemsRepository.getAllItems().stream()
+                    .map(AllCatalogItems::getName)
+                    .collect(Collectors.toList());
+            List<String> missingItems = allItems.stream()
+                    .filter(item -> !ownedItems.contains(item.toLowerCase()))
+                    .sorted()
+                    .collect(Collectors.toList());
+            webPageDownloader.writeToFile(missingItems, "all"+link);
+        }
+
+        Path path = Paths.get(testFile.getAbsolutePath());
+        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+
+        return ResponseEntity.ok()
+                .contentLength(testFile.length())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
